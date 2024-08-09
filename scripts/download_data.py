@@ -1,7 +1,6 @@
 import gdown
 import zipfile
 import os
-import shutil
 import argparse
 
 def download_and_extract(url, destination):
@@ -17,11 +16,11 @@ if __name__ == "__main__":
         os.makedirs(path)
 
     file_urls = {
-        '1': '11cU3DYDVtRPjIYLyT345y2L-wCOYagCK',
-        '2': '1kXzF--BmVUNBdG2EHCF3jDb5QmYaj3EB',
-        '3': '1IXgql4NqIrerbvvF3tDOu4ry0ibKHX83',
-        '4': '1xtVfJWRaoVXwYjJFADQPRDukufgBHhIV',
-        '5': '173efqT4u3h3ff45WIiIHFLQWoTukUPlz'
+        '1': {'id': '11cU3DYDVtRPjIYLyT345y2L-wCOYagCK', 'name': '2019a-smoke-full'},
+        '2': {'id': '1kXzF--BmVUNBdG2EHCF3jDb5QmYaj3EB', 'name': 'AiForMankind'},
+        '3': {'id': '1IXgql4NqIrerbvvF3tDOu4ry0ibKHX83', 'name': 'total_Combine'},
+        '4': {'id': '1xtVfJWRaoVXwYjJFADQPRDukufgBHhIV', 'name': 'SmokesFrames-2.4k'},
+        '5': {'id': '173efqT4u3h3ff45WIiIHFLQWoTukUPlz', 'name': 'Wilfire_2023'}
     }
 
     parser = argparse.ArgumentParser(description='Download and extract ZIP file from Google Drive.')
@@ -39,9 +38,11 @@ if __name__ == "__main__":
     selected_options = args.options
 
     for option in selected_options:
-        url_id = file_urls.get(option)
-        if url_id:
-            destination = os.path.join(path, f'file_{url_id}.zip')
+        file_info = file_urls.get(option)
+        if file_info:
+            url_id = file_info['id']
+            file_name = file_info['name']
+            destination = os.path.join(path, f'{file_name}.zip')
             download_and_extract(url_id, destination)
         else:
             print(f"Invalid option '{option}'.")
