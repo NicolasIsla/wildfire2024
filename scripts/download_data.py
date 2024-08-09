@@ -42,9 +42,14 @@ if __name__ == "__main__":
         if file_info:
             url_id = file_info['id']
             file_name = file_info['name']
-            destination = os.path.join(path, f'{file_name}.zip')
+            # create a folder with the name of the file
+            path_folder = os.path.join(path, file_name)
+            if not os.path.exists(path_folder):
+                os.makedirs(path_folder)
+            destination = os.path.join(path_folder, f'{file_name}.zip')
             download_and_extract(url_id, destination)
         else:
             print(f"Invalid option '{option}'.")
 
     print("Download and extraction completed.")
+
