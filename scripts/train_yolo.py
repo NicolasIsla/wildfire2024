@@ -55,7 +55,6 @@ if __name__ == "__main__":
         batch_size=args.batch_size,
         devices=devices,
         project=args.project,
-        name=args.name
     )
 
 
