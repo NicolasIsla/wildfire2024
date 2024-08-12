@@ -7,30 +7,34 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 import numpy as np
 
 def iou(box1, box2):
-    """Calcula el IoU (Intersection over Union) entre dos cajas."""
-    xA = max(box1[0], box2[0])
-    yA = max(box1[1], box2[1])
-    xB = min(box1[2], box2[2])
-    yB = min(box1[3], box2[3])
+    """Calcula el IoU (Intersection over Union) entre dos cajas en formato xywhn."""
+    # Convertir xywhn a formato xmin, ymin, xmax, ymax
+    box1_xmin = box1[0] - box1[2] / 2
+    box1_ymin = box1[1] - box1[3] / 2
+    box1_xmax = box1[0] + box1[2] / 2
+    box1_ymax = box1[1] + box1[3] / 2
 
-    interArea = max(0, xB - xA)
-    interArea *= max(0, yB - yA)
+    box2_xmin = box2[0] - box2[2] / 2
+    box2_ymin = box2[1] - box2[3] / 2
+    box2_xmax = box2[0] + box2[2] / 2
+    box2_ymax = box2[1] + box2[3] / 2
 
-    box1Area = (box1[2] - box1[0]) * (box1[3] - box1[1])
-    box2Area = (box2[2] - box2[0]) * (box2[3] - box2[1])
+    # Calcular la intersección
+    xA = max(box1_xmin, box2_xmin)
+    yA = max(box1_ymin, box2_ymin)
+    xB = min(box1_xmax, box2_xmax)
+    yB = min(box1_ymax, box2_ymax)
 
+    interArea = max(0, xB - xA) * max(0, yB - yA)
+
+    # Calcular el área de cada caja
+    box1Area = (box1_xmax - box1_xmin) * (box1_ymax - box1_ymin)
+    box2Area = (box2_xmax - box2_xmin) * (box2_ymax - box2_ymin)
+
+    # Calcular IoU
     iou = interArea / float(box1Area + box2Area - interArea)
 
     return iou
-
-def convert_label_to_bbox(label, img_width, img_height):
-    """Convierte etiquetas en formato YOLO a bounding box en formato [xmin, ymin, xmax, ymax]."""
-    cx, cy, w, h = label
-    xmin = (cx - w / 2) * img_width
-    ymin = (cy - h / 2) * img_height
-    xmax = (cx + w / 2) * img_width
-    ymax = (cy + h / 2) * img_height
-    return [xmin, ymin, xmax, ymax]
 
 def calculate_metrics(results_test, data_config, iou_threshold=0.1):
     true_labels_dir = data_config.replace('data.yaml', 'labels/test')
@@ -44,21 +48,24 @@ def calculate_metrics(results_test, data_config, iou_threshold=0.1):
         if not os.path.exists(true_label_path):
             continue
 
-        # Cargar las etiquetas verdaderas
+        # Cargar las etiquetas verdaderas en formato xywhn
         with open(true_label_path, 'r') as f:
             true_labels = np.array([list(map(float, line.split()[1:])) for line in f.readlines()])
-
-        img_width, img_height = 640, 480  
         
-        # Convertir las etiquetas verdaderas a formato [xmin, ymin, xmax, ymax]
-        true_boxes = [convert_label_to_bbox(label, img_width, img_height) for label in true_labels]
-
-        # Extraer las predicciones del modelo
-        pred_boxes = [[result['xmin'], result['ymin'], result['xmax'], result['ymax']]]
+        # Extraer las predicciones del modelo en formato xywhn
+        pred_boxes = []
+        for box in result['boxes']:
+            pred_box = [
+                box['xmin'],  # X centro (normalizado)
+                box['ymin'],  # Y centro (normalizado)
+                box['xmax'],  # Anchura (normalizado)
+                box['ymax']   # Altura (normalizado)
+            ]
+            pred_boxes.append(pred_box)
 
         y_true = []
         y_pred = []
-        for true_box in true_boxes:
+        for true_box in true_labels:
             if len(pred_boxes) == 0:
                 y_true.append(1)
                 y_pred.append(0)
@@ -126,10 +133,10 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
         for box in result.boxes:
             box_info = {
                 'image': result.path,  # Ruta de la imagen
-                'xmin': box.xyxy[0][0].item(),  # Coordenada X mínima
-                'ymin': box.xyxy[0][1].item(),  # Coordenada Y mínima
-                'xmax': box.xyxy[0][2].item(),  # Coordenada X máxima
-                'ymax': box.xyxy[0][3].item(),  # Coordenada Y máxima
+                'xmin': box.xywhn[0][0].item(),  # X centro (normalizado)
+                'ymin': box.xywhn[0][1].item(),  # Y centro (normalizado)
+                'xmax': box.xywhn[0][2].item(),  # Anchura (normalizado)
+                'ymax': box.xywhn[0][3].item(),  # Altura (normalizado)
                 'confidence': box.conf.item(),  # Probabilidad
                 'class': box.cls.item()  # Clase predicha
             }
@@ -193,4 +200,3 @@ if __name__ == "__main__":
         project=args.project,
         iou_threshold=args.iou_threshold,
     )
-
