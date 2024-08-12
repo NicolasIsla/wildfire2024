@@ -33,10 +33,10 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
         for box in result.boxes:
             box_info = {
                 'image': result.path,  # Ruta de la imagen
-                'xmin': box.xyxy[0].item(),  # Coordenada X mínima
-                'ymin': box.xyxy[1].item(),  # Coordenada Y mínima
-                'xmax': box.xyxy[2].item(),  # Coordenada X máxima
-                'ymax': box.xyxy[3].item(),  # Coordenada Y máxima
+                'xmin': box.xyxy[0][0].item(),  # Coordenada X mínima
+                'ymin': box.xyxy[0][1].item(),  # Coordenada Y mínima
+                'xmax': box.xyxy[0][2].item(),  # Coordenada X máxima
+                'ymax': box.xyxy[0][3].item(),  # Coordenada Y máxima
                 'confidence': box.conf.item(),  # Probabilidad
                 'class': box.cls.item()  # Clase predicha
             }
@@ -48,6 +48,7 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
         json.dump(bounding_boxes, json_file, indent=4)
 
     print(f"Bounding boxes y probabilidades guardadas en: {output_json_path}")
+
 
 
     
