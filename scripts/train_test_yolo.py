@@ -48,8 +48,7 @@ def calculate_metrics(results_test, data_config, iou_threshold=0.1):
         with open(true_label_path, 'r') as f:
             true_labels = np.array([list(map(float, line.split()[1:])) for line in f.readlines()])
 
-        # Obtener las dimensiones de la imagen
-        img_width, img_height = 640, 480  # Puedes ajustar esto dependiendo del tamaño de tus imágenes
+        img_width, img_height = 640, 480  
         
         # Convertir las etiquetas verdaderas a formato [xmin, ymin, xmax, ymax]
         true_boxes = [convert_label_to_bbox(label, img_width, img_height) for label in true_labels]
@@ -57,18 +56,19 @@ def calculate_metrics(results_test, data_config, iou_threshold=0.1):
         # Extraer las predicciones del modelo
         pred_boxes = [[result['xmin'], result['ymin'], result['xmax'], result['ymax']]]
 
-        # Para cada predicción, encontrar la mejor coincidencia en las etiquetas verdaderas
         y_true = []
         y_pred = []
         for true_box in true_boxes:
             if len(pred_boxes) == 0:
+                y_true.append(1)
+                y_pred.append(0)
                 break
 
             ious = np.array([iou(true_box, pred_box) for pred_box in pred_boxes])
             max_iou_idx = np.argmax(ious)
             max_iou = ious[max_iou_idx]
 
-            if max_iou > iou_threshold:  # Umbral IoU
+            if max_iou > iou_threshold: 
                 y_true.append(1)
                 y_pred.append(1)
                 pred_boxes = np.delete(pred_boxes, max_iou_idx, axis=0)
@@ -163,7 +163,6 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
 
     print(f"Métricas guardadas en: {metrics_path}")
 
-    # Finalizar la sesión de W&B
     wandb.finish()
 
     return results
