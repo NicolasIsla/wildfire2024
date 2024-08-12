@@ -1,6 +1,8 @@
 import argparse
 from ultralytics import YOLO
 import wandb
+import json
+import os
 
 def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=16, devices=None, project="runs/train"):
     # Iniciar sesión en W&B
@@ -22,8 +24,34 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
     path_weights = project + '/' + name + '/weights/best.pt'
     # load the best weights
     model = YOLO(path_weights)
-    # test the model
-    results_test = model.val(device=devices, split='test', save_json=True)
+    # test the model # ./data/AiForMankind/DS/data.yaml
+    path_test_images = data_config.replace('data.yaml', 'images/test')
+    results_test = model(path_test_images, device = devices)
+    # save the results
+    bounding_boxes = []
+    for result in results_test:
+        for box in result.boxes:
+            box_info = {
+                'image': result.path,  # Ruta de la imagen
+                'xmin': box.xyxy[0].item(),  # Coordenada X mínima
+                'ymin': box.xyxy[1].item(),  # Coordenada Y mínima
+                'xmax': box.xyxy[2].item(),  # Coordenada X máxima
+                'ymax': box.xyxy[3].item(),  # Coordenada Y máxima
+                'confidence': box.conf.item(),  # Probabilidad
+                'class': box.cls.item()  # Clase predicha
+            }
+            bounding_boxes.append(box_info)
+
+    # Guardar las bounding boxes y probabilidades en un archivo JSON
+    output_json_path = os.path.join(project, name, 'test_bounding_boxes.json')
+    with open(output_json_path, 'w') as json_file:
+        json.dump(bounding_boxes, json_file, indent=4)
+
+    print(f"Bounding boxes y probabilidades guardadas en: {output_json_path}")
+
+
+    
+
 
 
     # Finalizar la sesión de W&B
