@@ -15,9 +15,16 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
 
     # Cargar el modelo preentrenado
     model = YOLO(model_weights)  # Load a pretrained model
-
     # Entrenar el modelo
     results = model.train(data=data_config, epochs=epochs, imgsz=img_size, batch=batch_size, device=devices, project=project, name=name)
+    # load the best weights
+    # extract name of the best weights file
+    best_weights = results['best']
+    # extract the path to the best weights file
+    path_weights = best_weights['path']
+    # load the best weights
+    model = YOLO(path_weights)
+    
 
     # Finalizar la sesión de W&B
     wandb.finish()
