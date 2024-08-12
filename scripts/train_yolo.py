@@ -17,7 +17,7 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
     # Cargar el modelo preentrenado
     model = YOLO(model_weights)  # Load a pretrained model
     # Entrenar el modelo
-    results = model.train(data=data_config, epochs=epochs, imgsz=img_size, batch=batch_size, device=devices, project=project, name=name)
+    results = model.train(data=data_config, epochs=epochs, imgsz=img_size, batch=batch_size, device=devices, project=project)
     # load the best weights
     path_weights = project + '/' + name + '/weights/best.pt'
     # load the best weights
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     parser.add_argument('--batch_size', type=int, default=16, help='Batch size for training.')
     parser.add_argument('--devices', type=str, default=None, help='GPUs to use for training (e.g., "0", "0,1").')
     parser.add_argument('--project', type=str, default='runs/train', help='Project directory to save results.')
-    parser.add_argument('--name', type=str, default='exp', help='Experiment name to save results.')
+    # parser.add_argument('--name', type=str, default='exp', help='Experiment name to save results.')
 
     args = parser.parse_args()
 
