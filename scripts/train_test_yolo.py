@@ -36,11 +36,11 @@ def iou(box1, box2):
 
     return iou
 
-def calculate_metrics(results_test, data_config, iou_threshold=0.1):
+def calculate_metrics(bounding_boxes, data_config, iou_threshold=0.1):
     true_labels_dir = data_config.replace('data.yaml', 'labels/test')
     pred_labels = []
 
-    for result in results_test:
+    for result in bounding_boxes:
         image_path = result['image']
         image_name = os.path.basename(image_path).replace('.jpg', '')
         true_label_path = os.path.join(true_labels_dir, image_name + '.txt')
@@ -52,40 +52,29 @@ def calculate_metrics(results_test, data_config, iou_threshold=0.1):
         with open(true_label_path, 'r') as f:
             true_labels = np.array([list(map(float, line.split()[1:])) for line in f.readlines()])
         
-        # Extraer las predicciones del modelo en formato xywhn
-        pred_boxes = []
-        for box in result['boxes']:
-            pred_box = [
-                box['xmin'],  # X centro (normalizado)
-                box['ymin'],  # Y centro (normalizado)
-                box['xmax'],  # Anchura (normalizado)
-                box['ymax']   # Altura (normalizado)
-            ]
-            pred_boxes.append(pred_box)
+        # Extraer la caja predicha del diccionario
+        pred_box = [
+            result['cx'],  # X centro
+            result['cy'],  # Y centro
+            result['w'],   # Anchura
+            result['h']    # Altura
+        ]
 
         y_true = []
         y_pred = []
         for true_box in true_labels:
-            if len(pred_boxes) == 0:
-                y_true.append(1)
-                y_pred.append(0)
-                break
+            iou_value = iou(true_box, pred_box)
 
-            ious = np.array([iou(true_box, pred_box) for pred_box in pred_boxes])
-            max_iou_idx = np.argmax(ious)
-            max_iou = ious[max_iou_idx]
-
-            if max_iou > iou_threshold: 
+            if iou_value > iou_threshold:
                 y_true.append(1)
                 y_pred.append(1)
-                pred_boxes = np.delete(pred_boxes, max_iou_idx, axis=0)
             else:
                 y_true.append(1)
                 y_pred.append(0)
 
-        # Etiquetas predichas adicionales se cuentan como falsos positivos
-        y_pred.extend([1] * len(pred_boxes))
-        y_true.extend([0] * len(pred_boxes))
+        # Si hay predicciones adicionales que no coinciden con etiquetas verdaderas
+        y_pred.extend([1] * (len(bounding_boxes) - len(y_true)))
+        y_true.extend([0] * (len(bounding_boxes) - len(y_true)))
 
         pred_labels.append((y_true, y_pred))
 
@@ -133,10 +122,10 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
         for box in result.boxes:
             box_info = {
                 'image': result.path,  # Ruta de la imagen
-                'xmin': box.xywhn[0][0].item(),  # X centro (normalizado)
-                'ymin': box.xywhn[0][1].item(),  # Y centro (normalizado)
-                'xmax': box.xywhn[0][2].item(),  # Anchura (normalizado)
-                'ymax': box.xywhn[0][3].item(),  # Altura (normalizado)
+                'cx': box.xywhn[0][0].item(),  # X centro (normalizado)
+                'cy': box.xywhn[0][1].item(),  # Y centro (normalizado)
+                'w': box.xywhn[0][2].item(),   # Anchura (normalizado)
+                'h': box.xywhn[0][3].item(),   # Altura (normalizado)
                 'confidence': box.conf.item(),  # Probabilidad
                 'class': box.cls.item()  # Clase predicha
             }
