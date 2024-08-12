@@ -1,80 +1,88 @@
 import argparse
-import wandb
-wandb.require("core")
 from ultralytics import YOLO
-# Define una función para la búsqueda de hiperparámetros
-def train_yolo(config=None):
-    with wandb.init(config=config):
-        config = wandb.config
-        
-        # Cargar el modelo preentrenado
-        model = YOLO(config.model_weights)  # Load a pretrained model
+import wandb
+from sklearn.metrics import precision_recall_fscore_support
 
-        # Entrenar el modelo
-        results = model.train(
-            data=config.data_config,
-            epochs=config.epochs,
-            imgsz=config.img_size,
-            batch=config.batch_size,
-            device=config.devices,
-            project=config.project,
-            name=config.name,
-            optimizer=config.optimizer,
-            lr0=config.lr0,
-            momentum=config.momentum,
-            weight_decay=config.weight_decay,
-            multi_scale=config.multi_scale,
-            rect=config.rect,
-            single_cls=config.single_cls,
-            freeze=config.freeze,
-            amp=config.amp
-        )
+def evaluate_model(model, data_config, iou_threshold=0.1):
+    # Load the dataset
+    dataset = model.load_dataset(data_config, split='test')
 
-        return results
+    # Initialize metrics
+    all_preds, all_labels = [], []
+
+    # Iterate over the dataset and collect predictions and labels
+    for img, label in dataset:
+        results = model(img, iou_thres=iou_threshold)
+        preds = results.pred[0].numpy()
+        labels = label.numpy()
+
+        all_preds.append(preds)
+        all_labels.append(labels)
+
+    # Compute precision, recall, and F1 score
+    precision, recall, f1, _ = precision_recall_fscore_support(all_labels, all_preds, average='weighted')
+    return precision, recall, f1
+
+def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=16, devices=None, project="runs/train", name="exp", log_wandb=True):
+    # Initialize W&B
+    if log_wandb:
+        wandb.init(project=project, name=name)
+        wandb.config.update({
+            "model_weights": model_weights,
+            "data_config": data_config,
+            "epochs": epochs,
+            "img_size": img_size,
+            "batch_size": batch_size,
+            "devices": devices,
+        })
+
+    # Load the pretrained model
+    model = YOLO(model_weights)
+
+    # Train the model
+    results = model.train(data=data_config, epochs=epochs, imgsz=img_size, batch=batch_size, device=devices, project=project, name=name)
+
+    # Log the results
+    if log_wandb:
+        wandb.finish()
+
+    return results
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Train YOLOv8 using a pretrained model.')
-    parser.add_argument('--model_weights', type=str, default='yolov8s.pt', help='Path to the pretrained model weights.')
+    parser = argparse.ArgumentParser(description='Train YOLOv5 using a pretrained model.')
+    parser.add_argument('--model_weights', type=str, default='yolov5s.pt', help='Path to the pretrained model weights.')
     parser.add_argument('--data_config', type=str, required=True, help='Path to dataset YAML config file.')
-    parser.add_argument('--epochs', type=int, default=50, help='Number of training epochs.')
+    parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs.')
     parser.add_argument('--img_size', type=int, default=640, help='Image size for training.')
     parser.add_argument('--batch_size', type=int, default=16, help='Batch size for training.')
     parser.add_argument('--devices', type=str, default=None, help='GPUs to use for training (e.g., "0", "0,1").')
-    parser.add_argument('--project', type=str, default='models/ForestFireDetection', help='Project directory to save results.')
-    parser.add_argument('--name', type=str, default='fire_detection_exp', help='Experiment name to save results.')
+    parser.add_argument('--project', type=str, default='runs/train', help='Project directory to save results.')
+    parser.add_argument('--name', type=str, default='exp', help='Experiment name to save results.')
+    parser.add_argument('--iou_threshold', type=float, default=0.1, help='IoU threshold for evaluation.')
 
     args = parser.parse_args()
 
-    # Convertir devices a lista de enteros si se proporcionan
+    # Convert devices to list of integers if provided
     devices = [int(d) for d in args.devices.split(',')] if args.devices else None
 
-    # Configuración inicial para W&B
-    sweep_config = {
-        'method': 'bayes',  # Optimización bayesiana
-        'metric': {'name': 'val_loss', 'goal': 'minimize'},
-        'parameters': {
-            'model_weights': {'value': args.model_weights},
-            'data_config': {'value': args.data_config},
-            'epochs': {'value': args.epochs},  # Fijar el número de épocas en 50
-            'img_size': {'values': [640, 512, 320]},  # Tamaños que podrían capturar bien los detalles
-            'batch_size': {'values': [16, 32, 64]},  # Ajustes en el tamaño del batch
-            'devices': {'value': devices},
-            'project': {'value': args.project},
-            'name': {'value': args.name},
-            'optimizer': {'values': ['SGD', 'Adam', 'AdamW']},
-            'lr0': {'min': 0.0001, 'max': 0.01},  # Rango de tasas de aprendizaje
-            'momentum': {'min': 0.85, 'max': 0.99},
-            'weight_decay': {'min': 0.0, 'max': 0.0005},
-            'multi_scale': {'values': [True, False]},
-            'rect': {'values': [True, False]},
-            'single_cls': {'values': [True, False]},  # Podría ser útil si sólo tienes una clase (incendio)
-            'freeze': {'values': [None, 10]},
-            'amp': {'values': [True, False]},  # Entrenamiento con precisión mixta
-        }
-    }
+    # Train the model
+    train_yolo(
+        model_weights=args.model_weights,
+        data_config=args.data_config,
+        epochs=args.epochs,
+        img_size=args.img_size,
+        batch_size=args.batch_size,
+        devices=devices,
+        project=args.project,
+        name=args.name
+    )
 
-    # Crear y ejecutar el sweep
-    sweep_id = wandb.sweep(sweep_config, project=args.project)
-    wandb.agent(sweep_id, function=train_yolo, count=20)  # Ejecutar 20 experimentos
+    # Load the trained model
+    trained_model = YOLO(f"{args.project}/{args.name}/weights/best.pt")
+
+    # Evaluate the model
+    precision, recall, f1 = evaluate_model(trained_model, args.data_config, iou_threshold=args.iou_threshold)
+    
+    print(f"Precision: {precision:.4f}, Recall: {recall:.4f}, F1 Score: {f1:.4f}")
 
 
