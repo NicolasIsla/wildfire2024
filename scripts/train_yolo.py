@@ -1,50 +1,26 @@
 import argparse
 from ultralytics import YOLO
 import wandb
-from sklearn.metrics import precision_recall_fscore_support
 
-def evaluate_model(model, data_config, iou_threshold=0.1):
-    # Load the dataset
-    dataset = model.load_dataset(data_config, split='test')
+def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=16, devices=None, project="runs/train", name="exp"):
+    # Iniciar sesión en W&B
+    wandb.init(project=project, name=name, config={
+        "model_weights": model_weights,
+        "data_config": data_config,
+        "epochs": epochs,
+        "img_size": img_size,
+        "batch_size": batch_size,
+        "devices": devices
+    })
 
-    # Initialize metrics
-    all_preds, all_labels = [], []
+    # Cargar el modelo preentrenado
+    model = YOLO(model_weights)  # Load a pretrained model
 
-    # Iterate over the dataset and collect predictions and labels
-    for img, label in dataset:
-        results = model(img, iou_thres=iou_threshold)
-        preds = results.pred[0].numpy()
-        labels = label.numpy()
-
-        all_preds.append(preds)
-        all_labels.append(labels)
-
-    # Compute precision, recall, and F1 score
-    precision, recall, f1, _ = precision_recall_fscore_support(all_labels, all_preds, average='weighted')
-    return precision, recall, f1
-
-def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=16, devices=None, project="runs/train", name="exp", log_wandb=True):
-    # Initialize W&B
-    if log_wandb:
-        wandb.init(project=project, name=name)
-        wandb.config.update({
-            "model_weights": model_weights,
-            "data_config": data_config,
-            "epochs": epochs,
-            "img_size": img_size,
-            "batch_size": batch_size,
-            "devices": devices,
-        })
-
-    # Load the pretrained model
-    model = YOLO(model_weights)
-
-    # Train the model
+    # Entrenar el modelo
     results = model.train(data=data_config, epochs=epochs, imgsz=img_size, batch=batch_size, device=devices, project=project, name=name)
 
-    # Log the results
-    if log_wandb:
-        wandb.finish()
+    # Finalizar la sesión de W&B
+    wandb.finish()
 
     return results
 
@@ -58,14 +34,12 @@ if __name__ == "__main__":
     parser.add_argument('--devices', type=str, default=None, help='GPUs to use for training (e.g., "0", "0,1").')
     parser.add_argument('--project', type=str, default='runs/train', help='Project directory to save results.')
     parser.add_argument('--name', type=str, default='exp', help='Experiment name to save results.')
-    parser.add_argument('--iou_threshold', type=float, default=0.1, help='IoU threshold for evaluation.')
 
     args = parser.parse_args()
 
-    # Convert devices to list of integers if provided
+    # Convertir devices a una lista de enteros si se proporcionan
     devices = [int(d) for d in args.devices.split(',')] if args.devices else None
 
-    # Train the model
     train_yolo(
         model_weights=args.model_weights,
         data_config=args.data_config,
@@ -76,13 +50,5 @@ if __name__ == "__main__":
         project=args.project,
         name=args.name
     )
-
-    # Load the trained model
-    trained_model = YOLO(f"./{args.project}/{args.name}/weights/best.pt")
-
-    # Evaluate the model
-    precision, recall, f1 = evaluate_model(trained_model, args.data_config, iou_threshold=args.iou_threshold)
-    
-    print(f"Precision: {precision:.4f}, Recall: {recall:.4f}, F1 Score: {f1:.4f}")
 
 
