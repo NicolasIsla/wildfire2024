@@ -78,7 +78,7 @@ if __name__ == "__main__":
     )
 
     # Load the trained model
-    trained_model = YOLO(f"{args.project}/{args.name}/weights/best.pt")
+    trained_model = YOLO(f"./{args.project}/{args.name}/weights/best.pt")
 
     # Evaluate the model
     precision, recall, f1 = evaluate_model(trained_model, args.data_config, iou_threshold=args.iou_threshold)
