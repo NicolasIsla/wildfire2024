@@ -26,7 +26,7 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
     model = YOLO(path_weights)
     # test the model # ./data/AiForMankind/DS/data.yaml
     path_test_images = data_config.replace('data.yaml', 'images/test')
-    results_test = model(path_test_images, device = devices)
+    results_test = model(path_test_images)
     # save the results
     bounding_boxes = []
     for result in results_test:
