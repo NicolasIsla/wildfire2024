@@ -1,7 +1,7 @@
 import argparse
 import wandb
+wandb.require("core")
 from ultralytics import YOLO
-
 # Define una función para la búsqueda de hiperparámetros
 def train_yolo(config=None):
     with wandb.init(config=config):
