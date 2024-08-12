@@ -2,7 +2,7 @@ import argparse
 from ultralytics import YOLO
 import wandb
 
-def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=16, devices=None, project="runs/train", name="exp"):
+def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=16, devices=None, project="runs/train"):
     # Iniciar sesión en W&B
     wandb.init(project=project, config={
         "model_weights": model_weights,
@@ -22,6 +22,8 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
     path_weights = project + '/' + name + '/weights/best.pt'
     # load the best weights
     model = YOLO(path_weights)
+    # test the model
+    results_test = model.val(device=devices, split='test', save_json=True)
 
 
     # Finalizar la sesión de W&B
