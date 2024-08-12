@@ -32,7 +32,7 @@ def convert_label_to_bbox(label, img_width, img_height):
     ymax = (cy + h / 2) * img_height
     return [xmin, ymin, xmax, ymax]
 
-def calculate_metrics(results_test, data_config):
+def calculate_metrics(results_test, data_config, iou_threshold=0.1):
     true_labels_dir = data_config.replace('data.yaml', 'labels/test')
     pred_labels = []
 
@@ -68,7 +68,7 @@ def calculate_metrics(results_test, data_config):
             max_iou_idx = np.argmax(ious)
             max_iou = ious[max_iou_idx]
 
-            if max_iou > 0.1:  # Umbral IoU
+            if max_iou > iou_threshold:  # Umbral IoU
                 y_true.append(1)
                 y_pred.append(1)
                 pred_boxes = np.delete(pred_boxes, max_iou_idx, axis=0)
@@ -95,7 +95,7 @@ def calculate_metrics(results_test, data_config):
 
     return precision, recall, f1
 
-def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=16, devices=None, project="runs/train"):
+def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=16, devices=None, project="runs/train", iou_threshold=0.1):
     # Iniciar sesión en W&B
     wandb.init(project=project, config={
         "model_weights": model_weights,
@@ -103,7 +103,8 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
         "epochs": epochs,
         "img_size": img_size,
         "batch_size": batch_size,
-        "devices": devices
+        "devices": devices,
+        "iou_threshold": iou_threshold
     })
     name = wandb.run.name  # Nombre de la ejecución de W&B
 
@@ -141,7 +142,7 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
     print(f"Bounding boxes y probabilidades guardadas en: {output_json_path}")
 
     # Calcular métricas de precisión, recall y F1
-    precision, recall, f1 = calculate_metrics(bounding_boxes, data_config)
+    precision, recall, f1 = calculate_metrics(bounding_boxes, data_config, iou_threshold=iou_threshold)
 
     print(f"Precision: {precision}")
     print(f"Recall: {recall}")
@@ -176,6 +177,7 @@ if __name__ == "__main__":
     parser.add_argument('--batch_size', type=int, default=16, help='Batch size for training.')
     parser.add_argument('--devices', type=str, default=None, help='GPUs to use for training (e.g., "0", "0,1").')
     parser.add_argument('--project', type=str, default='runs/train', help='Project directory to save results.')
+    parser.add_argument('--iou_threshold', type=float, default=0.1, help='IoU threshold for calculating metrics.')
 
     args = parser.parse_args()
 
@@ -190,4 +192,6 @@ if __name__ == "__main__":
         batch_size=args.batch_size,
         devices=devices,
         project=args.project,
+        iou_threshold=args.iou_threshold,
     )
+
