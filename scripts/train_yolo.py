@@ -17,7 +17,7 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
     # Cargar el modelo preentrenado
     model = YOLO(model_weights)  # Load a pretrained model
     # Entrenar el modelo
-    results = model.train(data=data_config, epochs=epochs, imgsz=img_size, batch=batch_size, device=devices, project=project)
+    results = model.train(data=data_config, epochs=epochs, imgsz=img_size, batch=batch_size, device=devices, project=project, name=name)
     # load the best weights
     path_weights = project + '/' + name + '/weights/best.pt'
     # load the best weights
