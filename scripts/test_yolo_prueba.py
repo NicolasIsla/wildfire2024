@@ -206,8 +206,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     devices = [int(d) for d in args.devices.split(',')] if args.devices else None
-    conf_thres_range = np.linspace(*map(float, args.conf_thres_range.split(',')))
-
+    # conf_thres_range = np.linspace(*map(float, args.conf_thres_range.split(',')))
+    conf_thres_range = np.linspace(
+    float(args.conf_thres_range.split(',')[0]), 
+    float(args.conf_thres_range.split(',')[1]), 
+    int(args.conf_thres_range.split(',')[2])
+)
     train_yolo(
         model_weights=args.model_weights,
         data_config=args.data_config,
