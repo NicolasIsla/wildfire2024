@@ -68,9 +68,7 @@ def calculate_metrics(bounding_boxes, data_config, iou_threshold=0.1):
             if iou_value > iou_threshold:
                 y_true.append(1)
                 y_pred.append(1)
-            else:
-                y_true.append(1)
-                y_pred.append(0)
+            
 
         # Si hay predicciones adicionales que no coinciden con etiquetas verdaderas
         y_pred.extend([1] * (len(bounding_boxes) - len(y_true)))
