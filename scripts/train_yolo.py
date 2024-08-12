@@ -4,7 +4,7 @@ import wandb
 
 def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=16, devices=None, project="runs/train", name="exp"):
     # Iniciar sesión en W&B
-    wandb.init(project=project, name=name, config={
+    wandb.init(project=project, config={
         "model_weights": model_weights,
         "data_config": data_config,
         "epochs": epochs,
@@ -12,6 +12,7 @@ def train_yolo(model_weights, data_config, epochs=100, img_size=640, batch_size=
         "batch_size": batch_size,
         "devices": devices
     })
+    name = wandb.run.name  # Nombre de la ejecución de W&B
 
     # Cargar el modelo preentrenado
     model = YOLO(model_weights)  # Load a pretrained model
