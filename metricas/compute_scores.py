@@ -11,14 +11,14 @@ from metricas.compute_perf import (
 
 def main(args):
     ds_name = args.dataset
-    IMG_FOLDER = f"Data/{ds_name}/images/val"
-    gt_folder = f"Data/{ds_name}/labels/val"
+    IMG_FOLDER = f"./data/{ds_name}/DS/images/val"
+    gt_folder = f"./data/{ds_name}/DS/labels/val"
     imgs = glob.glob(f"{IMG_FOLDER}/*")
     imgs.sort()
 
     print(f"Total validation images: {len(imgs)}")
 
-    pred_folders = glob.glob(f"Data/test_preds/**/labels")
+    pred_folders = glob.glob(f"./data/{ds_name}/DS/test_preds/**/labels")
     pred_folders.sort()
     pred_folders = [f for f in pred_folders if f"{ds_name}" in f]
 
