@@ -18,7 +18,7 @@ def main(args):
     
     # Verificar que existan archivos en la ruta de predicciones
     prediction_files = glob.glob(os.path.join(pred_folder, "*"))
-    prediction_dirs = [os.path.join(dir, 'labels') for dir in prediction_dirs]
+    pred_folder = [os.path.join(dir, 'labels') for dir in prediction_files]
     
     
     
