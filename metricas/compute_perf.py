@@ -186,6 +186,8 @@ def find_best_conf_threshold_and_plot(
         plt.ylabel("Metric Value")
         plt.legend()
         plt.grid(True)
+        # save in predictions folder
+        plt.savefig(f"{pred_folder}/metrics.png")
         plt.show()
 
     return best_conf_thres, best_f1_score, best_precision, best_recall
