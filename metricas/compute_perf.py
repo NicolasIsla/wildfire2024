@@ -106,7 +106,7 @@ def evaluate_multiple_pred_folders(pred_folders, gt_folder, conf_thres_range, ca
             "Recall",
         ]
     )
-    print(len(pred_folders))
+    pred_folders = os.listdir(pred_folders)
     for pred_folder in pred_folders:
         best_conf_thres, best_f1_score, best_precision, best_recall = (
             find_best_conf_threshold(pred_folder, gt_folder, conf_thres_range, cat)
