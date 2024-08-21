@@ -17,6 +17,7 @@ def main(args):
     conf_thres_range = np.linspace(0.01, 0.50, 50)
     
     # Obtener resultados de la evaluación de predicciones
+    pred_folder = os.listdir(pred_folder)
     results_df = evaluate_multiple_pred_folders([pred_folder], gt_folder, conf_thres_range)
     results_df = results_df.sort_values(by="Best F1 Score", ascending=False)
 
