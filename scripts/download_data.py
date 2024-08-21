@@ -20,7 +20,7 @@ if __name__ == "__main__":
         '2': {'id': '1kXzF--BmVUNBdG2EHCF3jDb5QmYaj3EB', 'name': 'AiForMankind'},
         '3': {'id': '1IXgql4NqIrerbvvF3tDOu4ry0ibKHX83', 'name': 'total_Combine'},
         '4': {'id': '1xtVfJWRaoVXwYjJFADQPRDukufgBHhIV', 'name': 'SmokesFrames-2.4k'},
-        '5': {'id': '173efqT4u3h3ff45WIiIHFLQWoTukUPlz', 'name': 'Wilfire_2023'}
+        '5': {'id': '173efqT4u3h3ff45WIiIHFLQWoTukUPlz', 'name': 'Wilfire_2023'},
     }
 
     parser = argparse.ArgumentParser(description='Download and extract ZIP file from Google Drive.')

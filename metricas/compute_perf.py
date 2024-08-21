@@ -15,10 +15,12 @@ def evaluate_predictions(pred_folder, gt_folder, conf_th=0.1, cat=None):
         os.path.splitext(os.path.basename(f))[0]
         for f in glob.glob(os.path.join(gt_folder, "*.txt"))
     ]
+    print(len(gt_filenames))
     pred_filenames = [
         os.path.splitext(os.path.basename(f))[0]
         for f in glob.glob(os.path.join(pred_folder, "*.txt"))
     ]
+    print(len(pred_filenames))
 
     # Evaluate each image based on the presence of ground truth and prediction files
     all_filenames = set(gt_filenames + pred_filenames)
