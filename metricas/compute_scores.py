@@ -29,13 +29,15 @@ def main(args):
     print(results_df.head())
 
     # Obtener los mejores valores utilizando la función proporcionada
-    best_conf_thres, best_f1_score, best_precision, best_recall = (
-        find_best_conf_threshold_and_plot(pred_folder, gt_folder, conf_thres_range, True)
-    )
+    for pred_foldera in pred_folder:
+        best_conf_thres, best_f1_score, best_precision, best_recall = (
+            find_best_conf_threshold_and_plot(pred_foldera, gt_folder, conf_thres_range, True)
+        )
 
-    print(
-        f"Best Confidence Threshold: {best_conf_thres}\nBest F1 Score: {best_f1_score}\nPrecision: {best_precision}\nRecall: {best_recall}"
-    )
+        print(
+            f"Best Confidence Threshold: {best_conf_thres}\nBest F1 Score: {best_f1_score}\nPrecision: {best_precision}\nRecall: {best_recall}"
+        )
+   
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Evaluate prediction folders and find the best confidence threshold.")
