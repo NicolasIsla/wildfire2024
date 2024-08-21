@@ -3,11 +3,12 @@ import numpy as np
 import pandas as pd
 import glob
 import argparse
-from metricas.compute_perf import (
+from compute_perf import (
     evaluate_predictions,
     evaluate_multiple_pred_folders,
     find_best_conf_threshold_and_plot,
 )
+
 
 def main(args):
     ds_name = args.dataset
