@@ -20,7 +20,13 @@ if __name__ == "__main__":
         '2': {'id': '1kXzF--BmVUNBdG2EHCF3jDb5QmYaj3EB', 'name': 'AiForMankind'},
         '3': {'id': '1IXgql4NqIrerbvvF3tDOu4ry0ibKHX83', 'name': 'total_Combine'},
         '4': {'id': '1xtVfJWRaoVXwYjJFADQPRDukufgBHhIV', 'name': 'SmokesFrames-2.4k'},
-        '5': {'id': '173efqT4u3h3ff45WIiIHFLQWoTukUPlz', 'name': 'Wilfire_2023'}
+        '5': {'id': '173efqT4u3h3ff45WIiIHFLQWoTukUPlz', 'name': 'Wilfire_2023'},
+        '6': {'id': '1Zz13mnYVfWFm5PwO0n1P9WhuIPJg9H81', 'name': 'Nemo'},
+        '7': {'id': '', 'name': 'DS-71'},
+        '8': {'id': '', 'name': 'PyroNear_2024'},
+        '9': {'id': '17aZEMghChHkYLjdi-yvMNsxxC6SdT6fw', 'name': 'FigLib'},
+
+
     }
 
     parser = argparse.ArgumentParser(description='Download and extract ZIP file from Google Drive.')
@@ -30,7 +36,11 @@ if __name__ == "__main__":
                              '2: corresponds to the AiForMankind \n'
                              '3: corresponds to the total Combine \n '
                              '4: corresponds to the SmokesFrames-2.4k\n '
-                             '5: corresponds to the Wilfire_2023',
+                             '5: corresponds to the Wilfire_2023\n '
+                            '6: corresponds to the Nemo\n '
+                            '7: corresponds to the DS-71\n '
+                            '8: corresponds to the PyroNear\n'
+                            '9: corresponds to the FigLib',
                         type=str)
 
     args = parser.parse_args()
