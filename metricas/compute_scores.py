@@ -33,7 +33,7 @@ def main(args):
     print(results_df.head())
 
     folder_name = results_df["Prediction Folder"].values[0]
-    pred_folder = f"Data/test_preds/{folder_name}/labels"
+    pred_folder = f"./data/test_preds/{folder_name}/labels"
 
     print(f"Evaluating best folder: {folder_name}")
 
