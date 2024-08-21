@@ -113,7 +113,7 @@ def evaluate_multiple_pred_folders(pred_folders, gt_folder, conf_thres_range, ca
 
         # Use loc to append data to the DataFrame to avoid potential issues
         results_df.loc[len(results_df.index)] = [
-            pred_folder.split("/")[2],
+            pred_folder.split("/")[7],
             best_conf_thres,
             best_f1_score,
             best_precision,
