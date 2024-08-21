@@ -22,10 +22,8 @@ def main(args):
     
     
     
-    
-    
     # Obtener resultados de la evaluación de predicciones
-    results_df = evaluate_multiple_pred_folders([pred_folder], gt_folder, conf_thres_range)
+    results_df = evaluate_multiple_pred_folders(pred_folder, gt_folder, conf_thres_range)
     results_df = results_df.sort_values(by="Best F1 Score", ascending=False)
 
     print(results_df.head())
