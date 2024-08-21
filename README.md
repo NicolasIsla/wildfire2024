@@ -11,3 +11,17 @@ Aquí se presentan los detalles de los datasets
 | Wildfire_2023/Pyronear    | 1096              | 877/741                   | 110/95                 | 109/88             |
 | NEMO                      | 2579              | 2342                      | 237                    |                    |
 
+Test metricas
+
+| Nombre del Dataset        | F1-Score    |
+|---------------------------|-------------|
+| 2019a-smoke-full/Fuego    | 0.58932     |
+| AiForMankind              | 0.84091     |
+| Combine                   | 0.82554     |
+| SmokeFrames-2.4k          | 0.9079      |
+| Wildfire_2023/Pyronear    | 0.58156     |
+| NEMO                      | 0.84934     |
+| DS-71c1fd51-v2            | 0.88741     |
+
+
+
