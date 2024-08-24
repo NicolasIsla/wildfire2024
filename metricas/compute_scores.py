@@ -26,7 +26,7 @@ def main(args):
     results_df = evaluate_multiple_pred_folders(pred_folder, gt_folder, conf_thres_range)
     results_df = results_df.sort_values(by="Best F1 Score", ascending=False)
 
-    print(results_df.head())
+    print(results_df)
 
     # Obtener los mejores valores utilizando la función proporcionada
     for pred_foldera in pred_folder:
