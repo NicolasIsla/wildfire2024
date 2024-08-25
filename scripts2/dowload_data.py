@@ -22,9 +22,8 @@ if __name__ == "__main__":
         '4': {'id': '1xtVfJWRaoVXwYjJFADQPRDukufgBHhIV', 'name': 'SmokesFrames-2.4k'},
         '5': {'id': '173efqT4u3h3ff45WIiIHFLQWoTukUPlz', 'name': 'Wilfire_2023'},
         '6': {'id': '1Zz13mnYVfWFm5PwO0n1P9WhuIPJg9H81', 'name': 'Nemo'},
-        '7': {'id': '', 'name': 'DS-71'},
-        '8': {'id': '', 'name': 'PyroNear_2024'},
-        '9': {'id': '17aZEMghChHkYLjdi-yvMNsxxC6SdT6fw', 'name': 'FigLib'},
+        '7': {'id': '1NJ7SsGZGlHP-a2MWurNZV3QojGxpbnem', 'name': 'DS_08_V1'},
+        '8': {'id': '1TUuPNzBiFWhQ7EdgNRj8fs0IlwYLX1tj', 'name': 'DS_08_V2'},
 
 
     }
@@ -38,9 +37,8 @@ if __name__ == "__main__":
                              '4: corresponds to the SmokesFrames-2.4k\n '
                              '5: corresponds to the Wilfire_2023\n '
                             '6: corresponds to the Nemo\n '
-                            '7: corresponds to the DS-71\n '
-                            '8: corresponds to the PyroNear\n'
-                            '9: corresponds to the FigLib',
+                            '7: corresponds to the DS_08_V1\n '
+                            '8: corresponds to the DS_08_V2',
                         type=str)
 
     args = parser.parse_args()
