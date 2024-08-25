@@ -32,7 +32,8 @@ def main(args):
         model_name = os.path.basename(os.path.dirname(os.path.dirname(pred_foldera)))
         
         # Obtener el conf correspondiente para el modelo
-        conf_thres = conf_dict.get(model_name, 0.01)  # Usa 0.01 como valor por defecto si no se encuentra en el dict
+        conf_thres = conf_dict.get(model_name, 0.01)  # Usa 0.01 como valor por defecto si no se encuentra en el dict, print error
+        print(f"Model: {model_name}, Confidence Threshold: {conf_thres}")
 
         precision, recall, f1_score = evaluate_predictions(pred_foldera, gt_folder, conf_th=conf_thres)
         results.append({
