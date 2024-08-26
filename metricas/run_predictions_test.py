@@ -13,14 +13,14 @@ datasets_test =[
     r"/data/nisla/DS_08_V2/DS/images/test/"
 
 ]
-def main(model_directory, model_name):
-    weights = model_directory
+def main(model_directory):
+    weights = glob.glob(f"{model_directory}/**/*best.pt", recursive=True)
 
-    # print(f"Number of weight files found: {len(weights)}")
+    print(f"Number of weight files found: {len(weights)}")
     for source in datasets_test:
         project = source.split('/')[-5]    
         for weight in weights:
-            model_name = model_name
+            model_name = weight.split('/')[-3]
             cmd = f"yolo predict model={weight} iou=0.01 conf=0.01 source={source} save=False save_txt save_conf project=models_test/{project}/test_results name={model_name}"
             print(f"* Command:\n{cmd}")
             subprocess.call(cmd, shell=True)
@@ -28,9 +28,7 @@ def main(model_directory, model_name):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run YOLO predictions on validation set for multiple models.")
     parser.add_argument('--model_directory', type=str, required=True, help='Path to the directory containing model weights.')
-    # model name
-    parser.add_argument('--model_name', type=str, required=True, help='Path to .')
 
 
     args = parser.parse_args()
-    main(args.model_directory, args.model_name)
+    main(args.model_directory)
