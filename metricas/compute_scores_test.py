@@ -56,7 +56,5 @@ if __name__ == "__main__":
     parser.add_argument("--gt_folder", type=str, required=True, help="Path to the ground truth labels folder.")
     parser.add_argument("--pred_folder", type=str, required=True, help="Path to the prediction labels folder.")
     parser.add_argument("--conf_file", type=str, required=True, help="Path to the CSV file containing model names and confidence thresholds.")
-
     args = parser.parse_args()
-    
     main(args)

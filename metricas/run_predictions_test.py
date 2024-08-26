@@ -13,7 +13,7 @@ datasets_test =[
     r"/data/nisla/DS_08_V2/DS/images/test/"
 
 ]
-def main(dataset, model_directory):
+def main(model_directory):
     weights = glob.glob(f"{model_directory}/**/*best.pt", recursive=True)
 
     print(f"Number of weight files found: {len(weights)}")
