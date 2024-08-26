@@ -29,6 +29,7 @@ def main(args):
     results = []
     for pred_foldera in pred_folder:
         # Extraer el nombre del modelo desde la ruta
+        print(pred_foldera)
         model_name = os.path.basename(os.path.dirname(os.path.dirname(pred_foldera)))
         
         # Obtener el conf correspondiente para el modelo
