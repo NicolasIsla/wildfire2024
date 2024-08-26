@@ -28,8 +28,8 @@ def main(args):
 
     print(results_df)
     # save results to a csv file in pred_folder
-    results_df.to_csv(os.path.join(pred_folder, "results.csv"), index=False)
-    
+    results_df.to_csv(os.path.join(args.pred_folder, "results.csv"), index=False)
+
     # Obtener los mejores valores utilizando la función proporcionada
     for pred_foldera in pred_folder:
         best_conf_thres, best_f1_score, best_precision, best_recall = (
