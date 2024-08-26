@@ -33,4 +33,4 @@ if __name__ == "__main__":
 
 
     args = parser.parse_args()
-    main(args.model_directory, arg.model_name)
+    main(args.model_directory, args.model_name)
