@@ -31,7 +31,7 @@ def main(args):
         # Extraer el nombre del modelo desde la ruta
         print(pred_foldera)
         # model_name = os.path.basename(os.path.dirname(os.path.dirname(pred_foldera)))
-        model_name = model_name.split('/')[-2]
+        model_name = pred_foldera.split('/')[-2]
         if model_name == "results.csv":
             # no continuar
             continue
