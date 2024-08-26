@@ -14,9 +14,9 @@ datasets_test =[
 
 ]
 def main(model_directory):
-    weights = glob.glob(f"{model_directory}/**/*best.pt", recursive=True)
+    weights = model_directory
 
-    print(f"Number of weight files found: {len(weights)}")
+    # print(f"Number of weight files found: {len(weights)}")
     for source in datasets_test:
         project = source.split('/')[-5]    
         for weight in weights:
