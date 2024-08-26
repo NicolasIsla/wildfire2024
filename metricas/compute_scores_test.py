@@ -29,7 +29,6 @@ def main(args):
     results = []
     for pred_foldera in pred_folder:
         # Extraer el nombre del modelo desde la ruta
-        print(pred_foldera)
         # model_name = os.path.basename(os.path.dirname(os.path.dirname(pred_foldera)))
         model_name = pred_foldera.split('/')[-2]
         if model_name == "results.csv":
@@ -39,14 +38,14 @@ def main(args):
         conf_thres = conf_dict.get(model_name, 0.01)  # Usa 0.01 como valor por defecto si no se encuentra en el dict, print error
         print(f"Model: {model_name}, Confidence Threshold: {conf_thres}")
 
-        precision, recall, f1_score = evaluate_predictions(pred_foldera, gt_folder, conf_th=conf_thres)
+        metrics = evaluate_predictions(pred_foldera, gt_folder, conf_th=conf_thres)
         results.append({
-            "Prediction Folder": os.path.basename(pred_foldera),
+            "Prediction Folder": "test",
             "Model Name": model_name,
             "Confidence Threshold": conf_thres,
-            "Precision": precision,
-            "Recall": recall,
-            "F1 Score": f1_score
+            "Precision": metrics["precision"],
+            "Recall": metrics["recall"],
+            "F1 Score": metrics["f1_score"]
         })
 
     # Convertir los resultados a un DataFrame para su fácil visualización
