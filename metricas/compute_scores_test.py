@@ -48,6 +48,8 @@ def main(args):
     # Convertir los resultados a un DataFrame para su fácil visualización
     results_df = pd.DataFrame(results)
     results_df = results_df.sort_values(by="F1 Score", ascending=False)
+    # save results to a csv file in pred_folder
+    results_df.to_csv(os.path.join(args.pred_folder, "results.csv"), index=False)
 
     print(results_df)
 
