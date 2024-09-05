@@ -16,7 +16,7 @@ def unzip_file(zip_path, extract_to):
 # URL del archivo en Google Drive
 file_url = "https://drive.google.com/file/d/10UJTh0YUpVk75H2KMIiZ61sDsC-woWl0/view?usp=sharing"
 output_path = "temporal_ds.zip"  # Nombre del archivo descargado
-extract_path = "data"  # Carpeta donde se descomprimirán los archivos
+extract_path = "/data/nisla"  # Carpeta donde se descomprimirán los archivos
 
 # Descargar y descomprimir
 download_file(file_url, output_path)
