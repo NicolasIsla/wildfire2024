@@ -143,10 +143,10 @@ print(f"Number of validation samples: {len(data_module.val_dataset)}")
 checkpoint_callback = ModelCheckpoint(monitor="val_acc", mode="max", save_top_k=1)
 
 early_stopping = EarlyStopping(
-    monitor='val_loss',
-    patience=5,
+    monitor='val_recall',
+    patience=10,
     verbose=True,
-    mode='min'
+    mode='max'
 )
 
 # Initialize the trainer with Weights & Biases logger
