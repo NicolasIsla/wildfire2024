@@ -62,4 +62,5 @@ data_module.setup()
 
 print(f"Number of training samples: {len(data_module.train_dataset)}")
 print(f"Number of validation samples: {len(data_module.val_dataset)}")
-
+# shape print
+print(data_module.train_dataset[0][0].shape)
