@@ -50,7 +50,7 @@ class FireDataModule(pl.LightningDataModule):
 # Initialize the DataModule
 data_dir = "temporal_ds/images"
 data_module = FireDataModule(data_dir)
-
+data_module.setup()
 # print size of the datasets
 
 print(f"Number of training samples: {len(data_module.train_dataset)}")
