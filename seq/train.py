@@ -79,13 +79,13 @@ class ResNetLSTM(LightningModule):
         self.classifier = nn.Linear(hidden_dim * multiplier, num_classes)
 
         # Metrics initialization for multiclass classification
-        self.train_accuracy = Accuracy(num_classes=num_classes, average='macro', mdmc_average='samplewise')
-        self.val_accuracy = Accuracy(num_classes=num_classes, average='macro', mdmc_average='samplewise')
-        self.train_precision = Precision(num_classes=num_classes, average='macro', mdmc_average='samplewise')
-        self.val_precision = Precision(num_classes=num_classes, average='macro', mdmc_average='samplewise')
-        self.train_recall = Recall(num_classes=num_classes, average='macro', mdmc_average='samplewise')
-        self.val_recall = Recall(num_classes=num_classes, average='macro', mdmc_average='samplewise')
-
+        self.train_accuracy = Accuracy(task="binary")
+        self.val_accuracy = Accuracy(task="binary")
+        self.train_precision = Precision(task="binary")
+        self.val_precision = Precision(task="binary")
+        self.train_recall = Recall(task="binary")
+        self.val_recall = Recall(task="binary")
+        
     def forward(self, x):
         timesteps = 4
         C = 3  # Assuming RGB images
