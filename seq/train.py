@@ -125,7 +125,7 @@ from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 
 # Añadiendo Weights & Biases al trainer
-wandb_logger = WandbLogger(project="Fire-Detection", entity="your_username", log_model="all")
+wandb_logger = WandbLogger(project="Fire-Detection", log_model="all")
 
 # Initialize the model
 model = ResNetLSTM(hidden_dim=256, num_layers=1)
