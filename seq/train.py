@@ -30,7 +30,7 @@ class FireSeriesDataset(Dataset):
         return torch.cat(tensor_list, dim=0), int(img_folder.split("/")[-2])
 
 class FireDataModule(pl.LightningDataModule):
-    def __init__(self, data_dir, batch_size=16, img_size=112, num_workers=12):
+    def __init__(self, data_dir, batch_size=16, img_size=112, num_workers=4):
         super().__init__()
         self.data_dir = data_dir
         self.batch_size = batch_size
@@ -67,7 +67,7 @@ def print_batch_shape(dataloader):
     for batch in dataloader:
         x, y = batch
         print(f"Batch x shape: {x.shape}")  # Shape of the images
-        print(f"Batch y shape: {y.shape}")  # Shape of the labels
+        print(f"Batch y shape: {y.shape}")  # Shape of the n
         break  # We only need to print the shape of one batch
 
 # Call this function with the training dataloader
