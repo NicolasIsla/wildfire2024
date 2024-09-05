@@ -138,7 +138,6 @@ early_stopping = EarlyStopping(
 # Initialize the trainer
 trainer = pl.Trainer(
     max_epochs=10,
-    gpus=1,  # Set this to the number of available GPUs or 0 for CPU mode.
     callbacks=[checkpoint_callback, early_stopping]
 )
 
