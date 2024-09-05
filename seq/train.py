@@ -25,8 +25,6 @@ class FireSeriesDataset(Dataset):
         
 
         tensor_list = apply_transform_list(img_list, self.train)
-        label = int(img_folder.split("/")[-2])
-        print(label)
 
         return torch.cat(tensor_list, dim=0), int(img_folder.split("/")[-2])
 
@@ -55,24 +53,10 @@ class FireDataModule(pl.LightningDataModule):
     def test_dataloader(self):
         return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=self.num_workers)
     
-# Initialize the DataModule
-data_dir = "/data/nisla/temporal_ds/images"
-data_module = FireDataModule(data_dir)
-data_module.setup()
-# print size of the datasets
 
-print(f"Number of training samples: {len(data_module.train_dataset)}")
-print(f"Number of validation samples: {len(data_module.val_dataset)}")
-def print_batch_shape(dataloader):
-    # Fetch one batch from the dataloader
-    for batch in dataloader:
-        x, y = batch
-        print(f"Batch x shape: {x.shape}")  # Shape of the images
-        print(f"Batch y shape: {y.shape}")  # Shape of the n
-        break  # We only need to print the shape of one batch
+
 
 # Call this function with the training dataloader
-print_batch_shape(data_module.train_dataloader())
 
 import torch
 import torch.nn as nn
@@ -120,5 +104,43 @@ class ResNetLSTM(LightningModule):
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
         return optimizer
+import pytorch_lightning as pl
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 
+# Initialize the model
 model = ResNetLSTM(hidden_dim=256, num_layers=1)
+
+# Initialize the data module
+data_dir = "/data/nisla/temporal_ds/images"
+data_module = FireDataModule(data_dir)
+data_module.setup()
+
+# Print the size of the datasets
+print(f"Number of training samples: {len(data_module.train_dataset)}")
+print(f"Number of validation samples: {len(data_module.val_dataset)}")
+
+# Set up the callbacks
+checkpoint_callback = ModelCheckpoint(
+    monitor='val_loss',
+    dirpath='model_checkpoints',
+    filename='resnet-lstm-{epoch:02d}-{val_loss:.2f}',
+    save_top_k=3,
+    mode='min'
+)
+
+early_stopping = EarlyStopping(
+    monitor='val_loss',
+    patience=5,
+    verbose=True,
+    mode='min'
+)
+
+# Initialize the trainer
+trainer = pl.Trainer(
+    max_epochs=10,
+    gpus=1,  # Set this to the number of available GPUs or 0 for CPU mode.
+    callbacks=[checkpoint_callback, early_stopping]
+)
+
+# Train the model
+trainer.fit(model, data_module)
