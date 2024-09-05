@@ -78,6 +78,7 @@ class ResNetLSTM(LightningModule):
         self.classifier = nn.Linear(hidden_dim * multiplier, num_classes)
 
     def forward(self, x):
+        print(x.size())
         batch_size, timesteps, C, H, W = x.size()
         x = x.view(batch_size * timesteps, C, H, W)
         x = self.resnet(x)  # Apply ResNet to each image
