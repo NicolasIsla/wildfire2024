@@ -25,7 +25,8 @@ class FireSeriesDataset(Dataset):
         
 
         tensor_list = apply_transform_list(img_list, self.train)
-        
+        label = int(img_folder.split("/")[-2])
+        print(label)
 
         return torch.cat(tensor_list, dim=0), int(img_folder.split("/")[-2])
 
