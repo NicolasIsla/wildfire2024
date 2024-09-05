@@ -66,7 +66,7 @@ from pytorch_lightning import LightningModule
 from torchmetrics import Accuracy, Precision, Recall
 
 class ResNetLSTM(LightningModule):
-    def __init__(self, hidden_dim, num_layers, bidirectional=False, num_classes=1):
+    def __init__(self, hidden_dim, num_layers, bidirectional=False):
         super().__init__()
         self.resnet = models.resnet18(pretrained=True)  # Using a pretrained ResNet18
         self.resnet.fc = nn.Identity()  # Remove the fully connected layer
@@ -75,15 +75,15 @@ class ResNetLSTM(LightningModule):
         multiplier = 2 if bidirectional else 1
         self.lstm = nn.LSTM(input_size=512, hidden_size=hidden_dim, num_layers=num_layers,
                             batch_first=True, bidirectional=bidirectional)
-        self.classifier = nn.Linear(hidden_dim * multiplier, 1)
+        self.classifier = nn.Linear(hidden_dim * multiplier, 1)  # Output a single value
 
         # Metrics initialization specifically set for binary classification tasks
-        self.train_accuracy = Accuracy(task="binary")
-        self.val_accuracy = Accuracy(task="binary")
-        self.train_precision = Precision(task="binary")
-        self.val_precision = Precision(task="binary")
-        self.train_recall = Recall(task="binary")
-        self.val_recall = Recall(task="binary")
+        self.train_accuracy = Accuracy(threshold=0.5)  # Assuming a sigmoid output
+        self.val_accuracy = Accuracy(threshold=0.5)
+        self.train_precision = Precision(task="binary", threshold=0.5)
+        self.val_precision = Precision(task="binary", threshold=0.5)
+        self.train_recall = Recall(task="binary", threshold=0.5)
+        self.val_recall = Recall(task="binary", threshold=0.5)
 
     def forward(self, x):
         timesteps = 4
@@ -95,14 +95,13 @@ class ResNetLSTM(LightningModule):
         x = x.view(batch_size, timesteps, -1)
         x, (h_n, c_n) = self.lstm(x)
         x = self.classifier(x[:, -1, :])
-        return x
+        return torch.sigmoid(x)  # Apply sigmoid activation function
 
     def training_step(self, batch, batch_idx):
         x, y = batch
         logits = self.forward(x)
-        loss = nn.functional.cross_entropy(logits, y)
+        loss = nn.functional.binary_cross_entropy_with_logits(logits, y.float())
         self.log("train_loss", loss)
-        # 
         self.log("train_acc", self.train_accuracy(logits, y))
         self.log("train_precision", self.train_precision(logits, y))
         self.log("train_recall", self.train_recall(logits, y))
@@ -111,7 +110,7 @@ class ResNetLSTM(LightningModule):
     def validation_step(self, batch, batch_idx):
         x, y = batch
         logits = self.forward(x)
-        loss = nn.functional.cross_entropy(logits, y)
+        loss = nn.functional.binary_cross_entropy_with_logits(logits, y.float())
         self.log("val_loss", loss)
         self.log("val_acc", self.val_accuracy(logits, y))
         self.log("val_precision", self.val_precision(logits, y))
