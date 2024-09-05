@@ -69,31 +69,30 @@ class ResNetLSTM(LightningModule):
     def __init__(self, hidden_dim, num_layers, bidirectional=False, num_classes=2):
         super().__init__()
         self.resnet = models.resnet18(pretrained=True)  # Using a pretrained ResNet18
-        self.resnet.fc = nn.Identity()  # Remove the final fully connected layer
+        # Remove the fully connected layer because we will attach LSTM after features
+        self.resnet.fc = nn.Identity()
 
-        # Assuming the output of ResNet18 is 512 features
+        # LSTM and classifier layers
+        multiplier = 2 if bidirectional else 1
         self.lstm = nn.LSTM(input_size=512, hidden_size=hidden_dim, num_layers=num_layers,
                             batch_first=True, bidirectional=bidirectional)
-
-        # Classifier layer
-        multiplier = 2 if bidirectional else 1
         self.classifier = nn.Linear(hidden_dim * multiplier, num_classes)
 
-        # Metrics
-        self.train_accuracy = Accuracy()
-        self.val_accuracy = Accuracy()
-        self.train_precision = Precision(num_classes=num_classes, average='macro')
-        self.val_precision = Precision(num_classes=num_classes, average='macro')
-        self.train_recall = Recall(num_classes=num_classes, average='macro')
-        self.val_recall = Recall(num_classes=num_classes, average='macro')
+        # Metrics initialization for multiclass classification
+        self.train_accuracy = Accuracy(num_classes=num_classes, average='macro', mdmc_average='samplewise')
+        self.val_accuracy = Accuracy(num_classes=num_classes, average='macro', mdmc_average='samplewise')
+        self.train_precision = Precision(num_classes=num_classes, average='macro', mdmc_average='samplewise')
+        self.val_precision = Precision(num_classes=num_classes, average='macro', mdmc_average='samplewise')
+        self.train_recall = Recall(num_classes=num_classes, average='macro', mdmc_average='samplewise')
+        self.val_recall = Recall(num_classes=num_classes, average='macro', mdmc_average='samplewise')
 
     def forward(self, x):
         timesteps = 4
-        C = 3  # Number of channels
+        C = 3  # Assuming RGB images
         batch_size, timestepsxC, H, W = x.size()
         x = x.view(batch_size, timesteps, C, H, W)
         x = x.view(batch_size * timesteps, C, H, W)
-        x = self.resnet(x)  # Apply ResNet to each image
+        x = self.resnet(x)
         x = x.view(batch_size, timesteps, -1)
         x, (h_n, c_n) = self.lstm(x)
         x = self.classifier(x[:, -1, :])
@@ -103,26 +102,20 @@ class ResNetLSTM(LightningModule):
         x, y = batch
         logits = self.forward(x)
         loss = nn.functional.cross_entropy(logits, y)
-        self.train_accuracy(logits, y)
-        self.train_precision(logits, y)
-        self.train_recall(logits, y)
         self.log("train_loss", loss)
-        self.log("train_acc", self.train_accuracy)
-        self.log("train_precision", self.train_precision)
-        self.log("train_recall", self.train_recall)
+        self.log("train_acc", self.train_accuracy(logits, y))
+        self.log("train_precision", self.train_precision(logits, y))
+        self.log("train_recall", self.train_recall(logits, y))
         return loss
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
         logits = self.forward(x)
         loss = nn.functional.cross_entropy(logits, y)
-        self.val_accuracy(logits, y)
-        self.val_precision(logits, y)
-        self.val_recall(logits, y)
         self.log("val_loss", loss)
-        self.log("val_acc", self.val_accuracy)
-        self.log("val_precision", self.val_precision)
-        self.log("val_recall", self.val_recall)
+        self.log("val_acc", self.val_accuracy(logits, y))
+        self.log("val_precision", self.val_precision(logits, y))
+        self.log("val_recall", self.val_recall(logits, y))
         return loss
 
     def configure_optimizers(self):
