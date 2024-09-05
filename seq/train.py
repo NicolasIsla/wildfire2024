@@ -100,14 +100,26 @@ class ResNetLSTM(LightningModule):
         x, y = batch
         logits = self.forward(x)
         loss = nn.functional.cross_entropy(logits, y)
-        self.log('train_loss', loss)
+        acc = self.train_accuracy(torch.sigmoid(logits), y.int())
+        precision = self.train_precision(torch.sigmoid(logits), y.int())
+        recall = self.train_recall(torch.sigmoid(logits), y.int())
+        self.log("train_loss", loss)
+        self.log("train_acc", acc)
+        self.log("train_precision", precision)
+        self.log("train_recall", recall)
         return loss
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
         logits = self.forward(x)
         loss = nn.functional.cross_entropy(logits, y)
-        self.log('val_loss', loss)
+        acc = self.val_accuracy(torch.sigmoid(logits), y.int())
+        precision = self.val_precision(torch.sigmoid(logits), y.int())
+        recall = self.val_recall(torch.sigmoid(logits), y.int())
+        self.log("val_loss", loss)
+        self.log("val_acc", acc)
+        self.log("val_precision", precision)
+        self.log("val_recall", recall)
         return loss
 
     def configure_optimizers(self):
