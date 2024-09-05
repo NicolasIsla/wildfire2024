@@ -48,7 +48,7 @@ class FireDataModule(pl.LightningDataModule):
         return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=self.num_workers)
     
 # Initialize the DataModule
-data_dir = "temporal_ds/images"
+data_dir = "/data/nisla/temporal_ds/images"
 data_module = FireDataModule(data_dir)
 data_module.setup()
 # print size of the datasets
