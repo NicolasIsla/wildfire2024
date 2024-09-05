@@ -120,9 +120,12 @@ class ResNetLSTM(LightningModule):
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
         return optimizer
-
-import pytorch_lightning as pl
+import wandb
+from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
+
+# Añadiendo Weights & Biases al trainer
+wandb_logger = WandbLogger(project="Fire-Detection", entity="your_username", log_model="all")
 
 # Initialize the model
 model = ResNetLSTM(hidden_dim=256, num_layers=1)
@@ -146,10 +149,12 @@ early_stopping = EarlyStopping(
     mode='min'
 )
 
-# Initialize the trainer
+# Initialize the trainer with Weights & Biases logger
 trainer = pl.Trainer(
     max_epochs=10,
-    callbacks=[checkpoint_callback, early_stopping]
+    callbacks=[checkpoint_callback, early_stopping],
+    logger=wandb_logger,  # Add W&B logger here
+    log_every_n_steps=50
 )
 
 # Train the model
