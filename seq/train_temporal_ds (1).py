@@ -279,7 +279,7 @@ wandb_logger = WandbLogger(project='fire_detection_project')
 
 # Initialize the Trainer
 trainer = pl.Trainer(
-    max_epochs=50,
+    max_epochs=10,
     callbacks=[checkpoint_callback],
     logger=wandb_logger
 )
