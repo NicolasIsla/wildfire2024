@@ -7,12 +7,12 @@ from utils import apply_transform_list
 import random
 
 class FireSeriesDataset(Dataset):
-    def __init__(self, root_dir, img_size=112, transform=None, train=True):
+    def __init__(self, root_dir, img_size=112, transform=None, is_train=True):
         self.transform = transform
         self.sets = glob.glob(f"{root_dir}/**/*")
         self.img_size=img_size
         random.shuffle(self.sets)
-        self.train = train
+        self.train = is_train
 
     def __len__(self):
         return len(self.sets)
