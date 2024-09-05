@@ -63,6 +63,8 @@ import torch.nn as nn
 import torchvision.models as models
 from pytorch_lightning import LightningModule
 
+from torchmetrics import Accuracy, Precision, Recall
+
 class ResNetLSTM(LightningModule):
     def __init__(self, hidden_dim, num_layers, bidirectional=False, num_classes=2):
         super().__init__()
@@ -77,22 +79,23 @@ class ResNetLSTM(LightningModule):
         multiplier = 2 if bidirectional else 1
         self.classifier = nn.Linear(hidden_dim * multiplier, num_classes)
 
+        # Metrics
+        self.train_accuracy = Accuracy()
+        self.val_accuracy = Accuracy()
+        self.train_precision = Precision(num_classes=num_classes, average='macro')
+        self.val_precision = Precision(num_classes=num_classes, average='macro')
+        self.train_recall = Recall(num_classes=num_classes, average='macro')
+        self.val_recall = Recall(num_classes=num_classes, average='macro')
+
     def forward(self, x):
         timesteps = 4
         C = 3  # Number of channels
-        # Reforma el tensor para separar timesteps y channels
         batch_size, timestepsxC, H, W = x.size()
         x = x.view(batch_size, timesteps, C, H, W)
-
-        # Combinar batch_size y timesteps para pasar por ResNet
-        x = x.view(batch_size * timesteps, C, H, W)
-
-
         x = x.view(batch_size * timesteps, C, H, W)
         x = self.resnet(x)  # Apply ResNet to each image
         x = x.view(batch_size, timesteps, -1)
         x, (h_n, c_n) = self.lstm(x)
-        # Use the last hidden state for classification
         x = self.classifier(x[:, -1, :])
         return x
 
@@ -100,31 +103,32 @@ class ResNetLSTM(LightningModule):
         x, y = batch
         logits = self.forward(x)
         loss = nn.functional.cross_entropy(logits, y)
-        acc = self.train_accuracy(torch.sigmoid(logits), y.int())
-        precision = self.train_precision(torch.sigmoid(logits), y.int())
-        recall = self.train_recall(torch.sigmoid(logits), y.int())
+        self.train_accuracy(logits, y)
+        self.train_precision(logits, y)
+        self.train_recall(logits, y)
         self.log("train_loss", loss)
-        self.log("train_acc", acc)
-        self.log("train_precision", precision)
-        self.log("train_recall", recall)
+        self.log("train_acc", self.train_accuracy)
+        self.log("train_precision", self.train_precision)
+        self.log("train_recall", self.train_recall)
         return loss
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
         logits = self.forward(x)
         loss = nn.functional.cross_entropy(logits, y)
-        acc = self.val_accuracy(torch.sigmoid(logits), y.int())
-        precision = self.val_precision(torch.sigmoid(logits), y.int())
-        recall = self.val_recall(torch.sigmoid(logits), y.int())
+        self.val_accuracy(logits, y)
+        self.val_precision(logits, y)
+        self.val_recall(logits, y)
         self.log("val_loss", loss)
-        self.log("val_acc", acc)
-        self.log("val_precision", precision)
-        self.log("val_recall", recall)
+        self.log("val_acc", self.val_accuracy)
+        self.log("val_precision", self.val_precision)
+        self.log("val_recall", self.val_recall)
         return loss
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
         return optimizer
+
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 
