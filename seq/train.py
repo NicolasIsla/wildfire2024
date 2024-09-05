@@ -69,8 +69,7 @@ class ResNetLSTM(LightningModule):
     def __init__(self, hidden_dim, num_layers, bidirectional=False, num_classes=2):
         super().__init__()
         self.resnet = models.resnet18(pretrained=True)  # Using a pretrained ResNet18
-        # Remove the fully connected layer because we will attach LSTM after features
-        self.resnet.fc = nn.Identity()
+        self.resnet.fc = nn.Identity()  # Remove the fully connected layer
 
         # LSTM and classifier layers
         multiplier = 2 if bidirectional else 1
@@ -78,14 +77,14 @@ class ResNetLSTM(LightningModule):
                             batch_first=True, bidirectional=bidirectional)
         self.classifier = nn.Linear(hidden_dim * multiplier, num_classes)
 
-        # Metrics initialization for multiclass classification
+        # Metrics initialization specifically set for binary classification tasks
         self.train_accuracy = Accuracy(task="binary")
         self.val_accuracy = Accuracy(task="binary")
         self.train_precision = Precision(task="binary")
         self.val_precision = Precision(task="binary")
         self.train_recall = Recall(task="binary")
         self.val_recall = Recall(task="binary")
-        
+
     def forward(self, x):
         timesteps = 4
         C = 3  # Assuming RGB images
