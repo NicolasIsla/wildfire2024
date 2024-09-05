@@ -151,7 +151,7 @@ early_stopping = EarlyStopping(
 
 # Initialize the trainer with Weights & Biases logger
 trainer = pl.Trainer(
-    max_epochs=10,
+    max_epochs=50,
     callbacks=[checkpoint_callback, early_stopping],
     logger=wandb_logger,  # Add W&B logger here
     log_every_n_steps=50
