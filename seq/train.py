@@ -78,8 +78,8 @@ class ResNetLSTM(LightningModule):
         self.classifier = nn.Linear(hidden_dim * multiplier, 1)  # Output a single value
 
         # Metrics initialization specifically set for binary classification tasks
-        self.train_accuracy = Accuracy(threshold=0.5)  # Assuming a sigmoid output
-        self.val_accuracy = Accuracy(threshold=0.5)
+        self.train_accuracy = Accuracy(task="binary",threshold=0.5)  # Assuming a sigmoid output
+        self.val_accuracy = Accuracy(task="binary", threshold=0.5)
         self.train_precision = Precision(task="binary", threshold=0.5)
         self.val_precision = Precision(task="binary", threshold=0.5)
         self.train_recall = Recall(task="binary", threshold=0.5)
