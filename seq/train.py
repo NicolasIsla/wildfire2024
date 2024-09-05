@@ -140,10 +140,10 @@ print(f"Number of training samples: {len(data_module.train_dataset)}")
 print(f"Number of validation samples: {len(data_module.val_dataset)}")
 
 # Set up the callbacks
-checkpoint_callback = ModelCheckpoint(monitor="val_acc", mode="max", save_top_k=1)
+checkpoint_callback = ModelCheckpoint(monitor="val_recall", mode="max", save_top_k=1)
 
 early_stopping = EarlyStopping(
-    monitor='val_recall',
+    monitor='val_loss',
     patience=10,
     verbose=True,
     mode='max'
