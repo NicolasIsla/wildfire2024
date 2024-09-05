@@ -1,5 +1,10 @@
 
 # Define the transformations
+from torchvision import transforms
+import random
+import torch
+import numpy as np
+
 resize = transforms.Resize((112, 112))
 horizontal_flip = transforms.RandomHorizontalFlip(p=0.5)
 rotation = transforms.RandomRotation(degrees=10)
