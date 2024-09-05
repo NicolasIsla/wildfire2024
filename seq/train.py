@@ -62,5 +62,62 @@ data_module.setup()
 
 print(f"Number of training samples: {len(data_module.train_dataset)}")
 print(f"Number of validation samples: {len(data_module.val_dataset)}")
-# shape print
-print(data_module.train_dataset[0][0].shape)
+def print_batch_shape(dataloader):
+    # Fetch one batch from the dataloader
+    for batch in dataloader:
+        x, y = batch
+        print(f"Batch x shape: {x.shape}")  # Shape of the images
+        print(f"Batch y shape: {y.shape}")  # Shape of the labels
+        break  # We only need to print the shape of one batch
+
+# Call this function with the training dataloader
+print_batch_shape(data_module.train_dataloader())
+
+import torch
+import torch.nn as nn
+import torchvision.models as models
+from pytorch_lightning import LightningModule
+
+class ResNetLSTM(LightningModule):
+    def __init__(self, hidden_dim, num_layers, bidirectional=False, num_classes=2):
+        super().__init__()
+        self.resnet = models.resnet18(pretrained=True)  # Using a pretrained ResNet18
+        self.resnet.fc = nn.Identity()  # Remove the final fully connected layer
+
+        # Assuming the output of ResNet18 is 512 features
+        self.lstm = nn.LSTM(input_size=512, hidden_size=hidden_dim, num_layers=num_layers,
+                            batch_first=True, bidirectional=bidirectional)
+
+        # Classifier layer
+        multiplier = 2 if bidirectional else 1
+        self.classifier = nn.Linear(hidden_dim * multiplier, num_classes)
+
+    def forward(self, x):
+        batch_size, timesteps, C, H, W = x.size()
+        x = x.view(batch_size * timesteps, C, H, W)
+        x = self.resnet(x)  # Apply ResNet to each image
+        x = x.view(batch_size, timesteps, -1)
+        x, (h_n, c_n) = self.lstm(x)
+        # Use the last hidden state for classification
+        x = self.classifier(x[:, -1, :])
+        return x
+
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self.forward(x)
+        loss = nn.functional.cross_entropy(logits, y)
+        self.log('train_loss', loss)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self.forward(x)
+        loss = nn.functional.cross_entropy(logits, y)
+        self.log('val_loss', loss)
+        return loss
+
+    def configure_optimizers(self):
+        optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
+        return optimizer
+
+model = ResNetLSTM(hidden_dim=256, num_layers=1)
