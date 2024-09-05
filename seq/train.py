@@ -12,6 +12,8 @@ class FireSeriesDataset(Dataset):
         self.transform = transform
         self.is_train = is_train
         self.images = glob.glob(os.path.join(root_dir, "*.jpg"))
+        print(f"Loading images from: {self.root_dir}")
+        print(f"Found {len(self.images)} images")
 
     def __len__(self):
         return len(self.images)
@@ -55,5 +57,4 @@ data_module.setup()
 
 print(f"Number of training samples: {len(data_module.train_dataset)}")
 print(f"Number of validation samples: {len(data_module.val_dataset)}")
-print(f"Number of test samples: {len(data_module.test_dataset)}")
 
