@@ -66,7 +66,7 @@ from pytorch_lightning import LightningModule
 from torchmetrics import Accuracy, Precision, Recall
 
 class ResNetLSTM(LightningModule):
-    def __init__(self, hidden_dim, num_layers, bidirectional=False, num_classes=2):
+    def __init__(self, hidden_dim, num_layers, bidirectional=False, num_classes=1):
         super().__init__()
         self.resnet = models.resnet18(pretrained=True)  # Using a pretrained ResNet18
         self.resnet.fc = nn.Identity()  # Remove the fully connected layer
@@ -75,7 +75,7 @@ class ResNetLSTM(LightningModule):
         multiplier = 2 if bidirectional else 1
         self.lstm = nn.LSTM(input_size=512, hidden_size=hidden_dim, num_layers=num_layers,
                             batch_first=True, bidirectional=bidirectional)
-        self.classifier = nn.Linear(hidden_dim * multiplier, num_classes)
+        self.classifier = nn.Linear(hidden_dim * multiplier, 1)
 
         # Metrics initialization specifically set for binary classification tasks
         self.train_accuracy = Accuracy(task="binary")
@@ -102,6 +102,7 @@ class ResNetLSTM(LightningModule):
         logits = self.forward(x)
         loss = nn.functional.cross_entropy(logits, y)
         self.log("train_loss", loss)
+        # 
         self.log("train_acc", self.train_accuracy(logits, y))
         self.log("train_precision", self.train_precision(logits, y))
         self.log("train_recall", self.train_recall(logits, y))
