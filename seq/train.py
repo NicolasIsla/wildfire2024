@@ -4,25 +4,30 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 import pytorch_lightning as pl
 from utils import apply_transform_list
+import random
 
 class FireSeriesDataset(Dataset):
-    def __init__(self, root_dir, img_size=112, transform=None, is_train=True):
-        self.root_dir = root_dir
-        self.img_size = img_size
+    def __init__(self, root_dir, img_size=112, transform=None, train=True):
         self.transform = transform
-        self.is_train = is_train
-        self.images = glob.glob(os.path.join(root_dir, "*.jpg"))
-        print(f"Loading images from: {self.root_dir}")
-        print(f"Found {len(self.images)} images")
+        self.sets = glob.glob(f"{root_dir}/**/*")
+        self.img_size=img_size
+        random.shuffle(self.sets)
+        self.train = train
 
     def __len__(self):
-        return len(self.images)
+        return len(self.sets)
 
     def __getitem__(self, idx):
-        img_path = self.images[idx]
-        img_list = glob.glob(f"{os.path.dirname(img_path)}/*.jpg")
-        tensor_list = apply_transform_list(img_list, self.is_train)
-        return torch.cat(tensor_list, dim=0), int(os.path.basename(img_path).split("_")[0])
+        img_folder = self.sets[idx]
+        img_list = glob.glob(f"{img_folder}/*.jpg")
+
+       
+        
+
+        tensor_list = apply_transform_list(img_list, self.train)
+        
+
+        return torch.cat(tensor_list, dim=0), int(img_folder.split("/")[-2])
 
 class FireDataModule(pl.LightningDataModule):
     def __init__(self, data_dir, batch_size=16, img_size=112, num_workers=12):
