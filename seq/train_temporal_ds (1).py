@@ -16,7 +16,7 @@ normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 
 
 
 # Function to apply the transformations using the generated parameters
-def apply_transform_list(imgs):
+def apply_transform_list(imgs, is_train=True):
     # Seed the random number generators
     seed = np.random.randint(2147483647)
     random.seed(seed)
@@ -37,17 +37,17 @@ def apply_transform_list(imgs):
 
     for img in imgs:
         img = resize(img)
+        if is_train:
+            if params['horizontal_flip'] < 0.5:
+                img = transforms.functional.hflip(img)
 
-        if params['horizontal_flip'] < 0.5:
-            img = transforms.functional.hflip(img)
+            img = transforms.functional.rotate(img, params['rotation'])
 
-        img = transforms.functional.rotate(img, params['rotation'])
-
-        img = transforms.functional.adjust_brightness(img, params['brightness'])
-        img = transforms.functional.adjust_contrast(img, params['contrast'])
-        img = transforms.functional.adjust_saturation(img, params['saturation'])
-        img = transforms.functional.adjust_hue(img, params['hue'])
-        img = transforms.functional.resized_crop(img, *params['crop_params'], size=(112, 112))
+            img = transforms.functional.adjust_brightness(img, params['brightness'])
+            img = transforms.functional.adjust_contrast(img, params['contrast'])
+            img = transforms.functional.adjust_saturation(img, params['saturation'])
+            img = transforms.functional.adjust_hue(img, params['hue'])
+            img = transforms.functional.resized_crop(img, *params['crop_params'], size=(112, 112))
         img = to_tensor(img)
         img = normalize(img)
 
@@ -153,10 +153,10 @@ class FireDataModule(pl.LightningDataModule):
 
     def setup(self, stage=None):
         self.train_dataset = FireSeriesDataset(
-            os.path.join(self.data_dir, "train"), self.img_size
+            os.path.join(self.data_dir, "train"), self.img_size, is_train=True
         )
         self.val_dataset = FireSeriesDataset(
-            os.path.join(self.data_dir, "val"), self.img_size
+            os.path.join(self.data_dir, "val"), self.img_size, is_train=False
         )
 
     def train_dataloader(self):
