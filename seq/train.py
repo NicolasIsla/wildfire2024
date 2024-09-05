@@ -99,7 +99,7 @@ class ResNetLSTM(LightningModule):
 
     def training_step(self, batch, batch_idx):
         x, y = batch
-        logits = self.forward(x)
+        logits = self.forward(x).view(-1)
         loss = nn.functional.binary_cross_entropy_with_logits(logits, y.float())
         self.log("train_loss", loss)
         self.log("train_acc", self.train_accuracy(logits, y))
@@ -109,7 +109,7 @@ class ResNetLSTM(LightningModule):
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
-        logits = self.forward(x)
+        logits = self.forward(x).view(-1) 
         loss = nn.functional.binary_cross_entropy_with_logits(logits, y.float())
         self.log("val_loss", loss)
         self.log("val_acc", self.val_accuracy(logits, y))
