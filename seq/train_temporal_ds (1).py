@@ -79,10 +79,11 @@ import os
 os.environ['CUDA_LAUNCH_BLOCKING'] = '0'
 
 class FireSeriesDataset(Dataset):
-    def __init__(self, root_dir, img_size=112, transform=None):
+    def __init__(self, root_dir, img_size=112, transform=None, is_train=True):
         self.transform = transform
         self.sets = glob.glob(f"{root_dir}/**/*")
         self.img_size=img_size
+        self.is_train = is_train
         random.shuffle(self.sets)
 
     def __len__(self):
@@ -128,7 +129,7 @@ class FireSeriesDataset(Dataset):
             cropped_image = cropped_image.resize((self.img_size, self.img_size))
             img_list.append(cropped_image)
 
-        tensor_list = apply_transform_list(img_list)
+        tensor_list = apply_transform_list(img_list, is_train=self.is_train)
         # txc, w,h to t, x,c,w,h
         tensor_list = [tensor.unsqueeze(0) for tensor in tensor_list]
 
