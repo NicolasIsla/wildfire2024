@@ -265,7 +265,14 @@ data_module = FireDataModule(data_dir)
 model = FireClassifier()
 
 # Define callbacks
-checkpoint_callback = ModelCheckpoint(monitor="val_acc", mode="max", save_top_k=1)
+checkpoint_callback = ModelCheckpoint(
+    dirpath="checkpoints/",  # Directorio donde se guardarán los checkpoints
+    filename="{epoch}-{val_loss:.2f}",  # Nombre de archivo con información de la época y la pérdida de validación
+    save_top_k=3,  # Guardar solo los 3 mejores checkpoints
+    verbose=True,  # Mostrar mensajes sobre el guardado de checkpoints
+    monitor="val_loss",  # Métrica a monitorear
+    mode="min",  # Minimizar la métrica monitorizada
+)
 
 # Initialize WandbLogger
 wandb_logger = WandbLogger(project='fire_detection_project')
