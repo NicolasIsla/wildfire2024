@@ -258,7 +258,7 @@ class FireClassifier(pl.LightningModule):
         }
 
 # Initialize the DataModule
-data_dir = "/data/nisla/temporal_ds/image"
+data_dir = "/data/nisla/temporal_ds/images"
 data_module = FireDataModule(data_dir)
 
 # Initialize the model
