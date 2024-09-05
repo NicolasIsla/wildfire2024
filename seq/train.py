@@ -129,13 +129,7 @@ print(f"Number of training samples: {len(data_module.train_dataset)}")
 print(f"Number of validation samples: {len(data_module.val_dataset)}")
 
 # Set up the callbacks
-checkpoint_callback = ModelCheckpoint(
-    monitor='val_loss',
-    dirpath='model_checkpoints',
-    filename='resnet-lstm-{epoch:02d}-{val_loss:.2f}',
-    save_top_k=3,
-    mode='min'
-)
+checkpoint_callback = ModelCheckpoint(monitor="val_acc", mode="max", save_top_k=1)
 
 early_stopping = EarlyStopping(
     monitor='val_loss',
