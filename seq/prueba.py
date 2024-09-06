@@ -276,7 +276,23 @@ train_loader = data_module.train_dataloader()
 images, label = get_image_by_index(train_loader, 1, 4) 
 
 # save the image
+
+
+# run prediction
+model = FireClassifier()
+# load the model
+path = "/home/nisla/wilfire2024/checkpoints/epoch=3-val_loss=0.14.ckpt"
+model = FireClassifier.load_from_checkpoint(path)
+model.eval()
+# run prediction
+output = model(images.unsqueeze(0))
+print(output)
+
+
+
+
 for i in range(images.size(0)):
     # reverse the normalization
+    T.ToPILImage()(images[i].cpu()).save(f"image_{i}_norm.png")
     images[i] = T.Normalize(mean=[0, 0, 0], std=[1/0.229, 1/0.224, 1/0.225])(images[i])
     T.ToPILImage()(images[i].cpu()).save(f"image_{i}.png")
