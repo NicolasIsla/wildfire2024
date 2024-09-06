@@ -271,12 +271,11 @@ def get_image_by_index(loader, batch_index, img_index):
             return x[img_index], y[img_index]
 
 
-train_loader = data_module.train_dataloader()
+train_loader = data_module.val_dataloader()
 # Extrae la imagen y etiqueta específicas
 images, label = get_image_by_index(train_loader, 1, 4) 
 print(label)
 # save the image
-
 
 # run prediction
 model = FireClassifier()
@@ -286,10 +285,14 @@ model = FireClassifier.load_from_checkpoint(path)
 model.eval().cpu()
 # run prediction
 print(images.size())
+
+
 output = model(images.unsqueeze(0).cpu())
 # calculate the probability
 output = torch.sigmoid(output)
-print(output)
+print("predicted probability:", output.item())
+print("predicted class:", output.item() > 0.5)
+print("true class:", label)
 
 
 
