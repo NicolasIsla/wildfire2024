@@ -274,7 +274,7 @@ def get_image_by_index(loader, batch_index, img_index):
 train_loader = data_module.train_dataloader()
 # Extrae la imagen y etiqueta específicas
 images, label = get_image_by_index(train_loader, 1, 4) 
-
+print(label)
 # save the image
 
 
@@ -287,7 +287,8 @@ model.eval().cpu()
 # run prediction
 print(images.size())
 output = model(images.unsqueeze(0).cpu())
-
+# calculate the probability
+output = torch.sigmoid(output)
 print(output)
 
 
