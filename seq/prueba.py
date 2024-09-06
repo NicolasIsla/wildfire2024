@@ -266,9 +266,15 @@ data_module.setup()
 # Función para obtener la imagen y etiqueta por índice de lote y posición
 def get_image_by_index(loader, batch_index, img_index):
     for i, (x, y) in enumerate(loader):
-        print(x.shape)
-        print(y.shape)
+        # guardar el índice del lote
+        if i == batch_index:
+            return x[img_index], y[img_index]
+
 
 train_loader = data_module.train_dataloader()
 # Extrae la imagen y etiqueta específicas
-image, label = get_image_by_index(train_loader, 1, 4) 
+images, label = get_image_by_index(train_loader, 1, 4) 
+
+# save the image
+for i in range(images.size(0)):
+    T.ToPILImage()(images[i].cpu()).save(f"image_{i}.png")
