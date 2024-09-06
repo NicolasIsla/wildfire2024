@@ -283,10 +283,10 @@ model = FireClassifier()
 # load the model
 path = "/home/nisla/wilfire2024/checkpoints/epoch=3-val_loss=0.14.ckpt"
 model = FireClassifier.load_from_checkpoint(path)
-model.eval()
+model.eval().cpu()
 # run prediction
 print(images.size())
-output = model(images.unsqueeze(0))
+output = model(images.unsqueeze(0).cpu())
 
 print(output)
 
