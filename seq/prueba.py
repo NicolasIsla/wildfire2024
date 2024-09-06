@@ -143,7 +143,7 @@ class FireSeriesDataset(Dataset):
 
 
 class FireDataModule(pl.LightningDataModule):
-    def __init__(self, data_dir, batch_size=16, img_size=112, num_workers=12):
+    def __init__(self, data_dir, batch_size=16, img_size=112, num_workers=6):
         super().__init__()
         self.data_dir = data_dir
         self.batch_size = batch_size
@@ -277,4 +277,6 @@ images, label = get_image_by_index(train_loader, 1, 4)
 
 # save the image
 for i in range(images.size(0)):
+    # reverse the normalization
+    images[i] = T.Normalize(mean=[0, 0, 0], std=[1/0.229, 1/0.224, 1/0.225])(images[i])
     T.ToPILImage()(images[i].cpu()).save(f"image_{i}.png")
