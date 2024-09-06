@@ -39,7 +39,10 @@ def main(base_path):
     # Agrupar las imágenes por hash y listar los paths y tipos
     grouped = all_hashes.groupby('hash').agg(list)
 
-    print(grouped)
+    # cantidad de imágenes y cantidad de grupos
+    print(f"Total de imágenes: {len(all_hashes)}")
+    print(f"Total de grupos: {len(grouped)}")
+        
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Calcular y agrupar hashes de imágenes entre conjuntos de datos.')
