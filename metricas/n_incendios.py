@@ -15,7 +15,7 @@ def calcular_hash(directorio, tipo):
             if file.endswith(('png', 'jpg', 'jpeg')):  # Ajusta los formatos según sea necesario
                 path = os.path.join(subdir, file)
                 image = Image.open(path)
-                hash = imagehash.average_hash(image, hash_size=3)  # Cambia el tipo de hash si prefieres
+                hash = imagehash.average_hash(image, hash_size=4)  # Cambia el tipo de hash si prefieres
                 hashes.append(str(hash))  # Convertir a string para que sea hashable
                 paths.append(path)
                 tipos.append(tipo)
