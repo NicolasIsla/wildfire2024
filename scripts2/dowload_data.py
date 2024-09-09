@@ -24,6 +24,10 @@ if __name__ == "__main__":
         '6': {'id': '1zSRrONobhe2_CDVD4yayWCOLh-5KPRv5', 'name': 'Nemo'},
         '7': {'id': '1NJ7SsGZGlHP-a2MWurNZV3QojGxpbnem', 'name': 'DS_08_V1'},
         '8': {'id': '1TUuPNzBiFWhQ7EdgNRj8fs0IlwYLX1tj', 'name': 'DS_08_V2'},
+        # https://drive.google.com/file/d/1p_2nQMZ2FbftULl9pEkgKAzygpefrpAU/view?usp=sharing
+        '9': {'id': '1p_2nQMZ2FbftULl9pEkgKAzygpefrpAU', 'name': 'PyroVideo'},
+        # https://drive.google.com/file/d/19Z0P0swSWuffqTuoVMdKfdmUPaz7zxR8/view?usp=drive_link
+        '10': {'id': '19Z0P0swSWuffqTuoVMdKfdmUPaz7zxR8', 'name': 'PyroVideoEmpty'},
     }
 
     parser = argparse.ArgumentParser(description='Download and extract ZIP file from Google Drive.')
