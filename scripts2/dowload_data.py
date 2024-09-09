@@ -27,7 +27,7 @@ if __name__ == "__main__":
         # https://drive.google.com/file/d/1p_2nQMZ2FbftULl9pEkgKAzygpefrpAU/view?usp=sharing
         '9': {'id': '1p_2nQMZ2FbftULl9pEkgKAzygpefrpAU', 'name': 'PyroVideo'},
         # https://drive.google.com/file/d/19Z0P0swSWuffqTuoVMdKfdmUPaz7zxR8/view?usp=drive_link
-        '10': {'id': '19Z0P0swSWuffqTuoVMdKfdmUPaz7zxR8', 'name': 'PyroVideoEmpty'},
+        '0': {'id': '19Z0P0swSWuffqTuoVMdKfdmUPaz7zxR8', 'name': 'PyroVideoEmpty'},
     }
 
     parser = argparse.ArgumentParser(description='Download and extract ZIP file from Google Drive.')
