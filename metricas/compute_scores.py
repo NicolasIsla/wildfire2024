@@ -14,7 +14,7 @@ def main(args):
     pred_folder = args.pred_folder  # Ruta al folder de predicciones
 
     # Define a range of possible confidence threshold values
-    conf_thres_range = np.linspace(0.01, 0.50, 50)
+    conf_thres_range = np.linspace(0.01, 0.3, 2)
     
     # Verificar que existan archivos en la ruta de predicciones
     prediction_files = glob.glob(os.path.join(pred_folder, "*"))
@@ -22,11 +22,11 @@ def main(args):
     
     
     
-    # Obtener resultados de la evaluación de predicciones
-    results_df = evaluate_multiple_pred_folders(pred_folder, gt_folder, conf_thres_range)
-    results_df = results_df.sort_values(by="Best F1 Score", ascending=False)
+    # # Obtener resultados de la evaluación de predicciones
+    # results_df = evaluate_multiple_pred_folders(pred_folder, gt_folder, conf_thres_range)
+    # results_df = results_df.sort_values(by="Best F1 Score", ascending=False)
 
-    print(results_df)
+    # print(results_df)
 
     # Obtener los mejores valores utilizando la función proporcionada
     for pred_foldera in pred_folder:
