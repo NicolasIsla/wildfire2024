@@ -29,25 +29,30 @@ def main(args):
     results = []
     for pred_foldera in pred_folder:
         # Extraer el nombre del modelo desde la ruta
-        model_name = os.path.basename(os.path.dirname(os.path.dirname(pred_foldera)))
-        
+        # model_name = os.path.basename(os.path.dirname(os.path.dirname(pred_foldera)))
+        model_name = pred_foldera.split('/')[-2]
+        if model_name == "results.csv":
+            # no continuar
+            continue
         # Obtener el conf correspondiente para el modelo
         conf_thres = conf_dict.get(model_name, 0.01)  # Usa 0.01 como valor por defecto si no se encuentra en el dict, print error
         print(f"Model: {model_name}, Confidence Threshold: {conf_thres}")
 
-        precision, recall, f1_score = evaluate_predictions(pred_foldera, gt_folder, conf_th=conf_thres)
+        metrics = evaluate_predictions(pred_foldera, gt_folder, conf_th=conf_thres)
         results.append({
-            "Prediction Folder": os.path.basename(pred_foldera),
+            "Prediction Folder": "test",
             "Model Name": model_name,
             "Confidence Threshold": conf_thres,
-            "Precision": precision,
-            "Recall": recall,
-            "F1 Score": f1_score
+            "Precision": metrics["precision"],
+            "Recall": metrics["recall"],
+            "F1 Score": metrics["f1_score"]
         })
 
     # Convertir los resultados a un DataFrame para su fácil visualización
     results_df = pd.DataFrame(results)
     results_df = results_df.sort_values(by="F1 Score", ascending=False)
+    # save results to a csv file in pred_folder
+    results_df.to_csv(os.path.join(args.pred_folder, "results.csv"), index=False)
 
     print(results_df)
 
@@ -56,7 +61,5 @@ if __name__ == "__main__":
     parser.add_argument("--gt_folder", type=str, required=True, help="Path to the ground truth labels folder.")
     parser.add_argument("--pred_folder", type=str, required=True, help="Path to the prediction labels folder.")
     parser.add_argument("--conf_file", type=str, required=True, help="Path to the CSV file containing model names and confidence thresholds.")
-
     args = parser.parse_args()
-    
     main(args)
