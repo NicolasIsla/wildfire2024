@@ -20,7 +20,7 @@ def load_conf_values(conf_file):
 def main(args):
     gt_folder = args.gt_folder  # Ruta al folder de ground truth
     pred_folder = args.pred_folder  # Ruta al folder de predicciones
-    conf_dict = load_conf_values(args.conf_file)  # Cargar el diccionario de conf
+    # conf_dict = load_conf_values(args.conf_file)  # Cargar el diccionario de conf
 
     # Verificar que existan archivos en la ruta de predicciones
     prediction_files = glob.glob(os.path.join(pred_folder, "*"))
@@ -35,7 +35,7 @@ def main(args):
             # no continuar
             continue
         # Obtener el conf correspondiente para el modelo
-        conf_thres = conf_dict.get(model_name, 0.01)  # Usa 0.01 como valor por defecto si no se encuentra en el dict, print error
+        conf_thres = 0.069999  # Usa 0.01 como valor por defecto si no se encuentra en el dict, print error
         print(f"Model: {model_name}, Confidence Threshold: {conf_thres}")
 
         metrics = evaluate_predictions(pred_foldera, gt_folder, conf_th=conf_thres)
@@ -60,6 +60,5 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Evaluate prediction folders with specific confidence thresholds.")
     parser.add_argument("--gt_folder", type=str, required=True, help="Path to the ground truth labels folder.")
     parser.add_argument("--pred_folder", type=str, required=True, help="Path to the prediction labels folder.")
-    parser.add_argument("--conf_file", type=str, required=True, help="Path to the CSV file containing model names and confidence thresholds.")
     args = parser.parse_args()
     main(args)
