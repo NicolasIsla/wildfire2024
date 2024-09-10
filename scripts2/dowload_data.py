@@ -33,8 +33,8 @@ if __name__ == "__main__":
         # https://drive.google.com/file/d/1PnzGMCz8ipCz0Mrvc1QLvaz4RjO6sfSf/view?usp=drive_link
         'b': {'id': '1PnzGMCz8ipCz0Mrvc1QLvaz4RjO6sfSf', 'name': 'NemoV2'},
         # https://drive.google.com/file/d/1CQm1yTZc9wv74BZmk8Qr_J9zSZ867XqH/view?usp=sharing
-        'c': {'id': '1CQm1yTZc9wv74BZmk8Qr_J9zSZ867XqH', 'name': 'NemoV3'},
-
+        'c': {'id': '1CQm1yTZc9wv74BZmk8Qr_J9zSZ867XqH', 'name': 'NemoV3'}
+    }
     parser = argparse.ArgumentParser(description='Download and extract ZIP file from Google Drive.')
     parser.add_argument('options', 
                         help='Select one or more options for the URLs (e.g., "12" or "3"). \n'
