@@ -35,7 +35,7 @@ def main(args):
             # no continuar
             continue
         # Obtener el conf correspondiente para el modelo
-        conf_thres = 0.09 # Usa 0.01 como valor por defecto si no se encuentra en el dict, print error
+        conf_thres = 0.14 # Usa 0.01 como valor por defecto si no se encuentra en el dict, print error
         print(f"Model: {model_name}, Confidence Threshold: {conf_thres}")
 
         metrics = evaluate_predictions(pred_foldera, gt_folder, conf_th=conf_thres)
