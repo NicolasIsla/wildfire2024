@@ -11,7 +11,8 @@ datasets_test =[
     # r"/data/nisla/Nemo/DS/images/test/",
     # r"/data/nisla/DS_08_V1/DS/images/test/",
     # # r"/data/nisla/DS_08_V2/DS/images/test/"
-    r"/data/nisla/NemoV2/Nemo_yolo/DS/images/test/"
+    # r"/data/nisla/NemoV2/Nemo_yolo/DS/images/test/"
+    r"/data/nisla/NemoV3/DS/images/test/"
 
 
 
