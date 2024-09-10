@@ -30,6 +30,8 @@ if __name__ == "__main__":
         '0': {'id': '19Z0P0swSWuffqTuoVMdKfdmUPaz7zxR8', 'name': 'PyroVideoEmpty'},
         # https://drive.google.com/file/d/1FRht00sPogpL-jKojYuUgXoLzljiR4zS/view?usp=sharing
         'a': {'id': '1FRht00sPogpL-jKojYuUgXoLzljiR4zS', 'name': 'videotest'},
+        # https://drive.google.com/file/d/1PnzGMCz8ipCz0Mrvc1QLvaz4RjO6sfSf/view?usp=drive_link
+        'b': {'id': '1PnzGMCz8ipCz0Mrvc1QLvaz4RjO6sfSf', 'name': 'NemoV2'},
     }
 
     parser = argparse.ArgumentParser(description='Download and extract ZIP file from Google Drive.')
