@@ -14,7 +14,7 @@ def main(args):
     pred_folder = args.pred_folder  # Ruta al folder de predicciones
 
     # Define a range of possible confidence threshold values
-    conf_thres_range = np.linspace(0.01, 0.5, 50)
+    conf_thres_range = np.linspace(0.01, 0.5, 1)
     
     # Verificar que existan archivos en la ruta de predicciones
     prediction_files = glob.glob(os.path.join(pred_folder, "*"))
