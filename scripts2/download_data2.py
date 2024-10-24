@@ -37,7 +37,7 @@ def save_response_content(response, destination):
 
 if __name__ == "__main__":
     # ID del archivo en Google Drive
-    file_id = "1KJkR06wFKcp57Pvd5E12E3y9uuAAIuxk"
+    file_id = "1gCbeNLzWyWhuHw9DmoG_0er9Cz1vdwKg"
     
     # Ruta de destino donde se guardará el archivo descargado
     destination = "/data/nisla/Smoke50v3.zip"

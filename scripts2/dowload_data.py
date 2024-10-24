@@ -7,8 +7,8 @@ def download_and_extract(url, destination, cookies_path=None):
     try:
         # Si se proporcionan cookies, las usamos para la descarga
         if cookies_path:
-            # gdown.download(f"https://drive.google.com/uc?id={url}", destination, quiet=False, use_cookies=cookies_path)
-            
+            gdown.download(f"https://drive.google.com/uc?id={url}", destination, quiet=False, use_cookies=cookies_path)
+
         else:
             gdown.download(f"https://drive.google.com/uc?id={url}", destination, quiet=False)
         
