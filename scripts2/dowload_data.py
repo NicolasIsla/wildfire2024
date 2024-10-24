@@ -3,12 +3,21 @@ import zipfile
 import os
 import argparse
 
-def download_and_extract(url, destination):
-    gdown.download(f"https://drive.google.com/uc?id={url}", destination, quiet=False)
+def download_and_extract(url, destination, cookies_path=None):
+    try:
+        # Si se proporcionan cookies, las usamos para la descarga
+        if cookies_path:
+            gdown.download(f"https://drive.google.com/uc?id={url}", destination, quiet=False, use_cookies=cookies_path)
+        else:
+            gdown.download(f"https://drive.google.com/uc?id={url}", destination, quiet=False)
+        
+        # Descomprime el archivo ZIP
+        with zipfile.ZipFile(destination, 'r') as zip_ref:
+            zip_ref.extractall(os.path.dirname(destination))
+        os.remove(destination)
 
-    with zipfile.ZipFile(destination, 'r') as zip_ref:
-        zip_ref.extractall(os.path.dirname(destination))
-    os.remove(destination)
+    except Exception as e:
+        print(f"Error downloading or extracting: {e}")
 
 if __name__ == "__main__":
     path = "/data/nisla"
@@ -42,38 +51,38 @@ if __name__ == "__main__":
         'f': {'id': '1gCbeNLzWyWhuHw9DmoG_0er9Cz1vdwKg', 'name': 'Smoke50v2'},
         # https://drive.google.com/file/d/1KJkR06wFKcp57Pvd5E12E3y9uuAAIuxk/view?usp=drive_link
         'g': {'id': '1KJkR06wFKcp57Pvd5E12E3y9uuAAIuxk', 'name': 'Smoke50v3'},
-
     }
     parser = argparse.ArgumentParser(description='Download and extract ZIP file from Google Drive.')
     parser.add_argument('options', 
                         help='Select one or more options for the URLs (e.g., "12" or "3"). \n'
                              '1: corresponds to the 2019a-smoke-full \n'
                              '2: corresponds to the AiForMankind \n'
-                             '3: corresponds to the total Combine \n '
-                             '4: corresponds to the SmokesFrames-2.4k\n '
-                             '5: corresponds to the Wilfire_2023\n '
-                            '6: corresponds to the Nemo\n '
-                            '7: corresponds to the DS_08_V1\n '
-                            '8: corresponds to the DS_08_V2',
+                             '3: corresponds to the total Combine \n'
+                             '4: corresponds to the SmokesFrames-2.4k\n'
+                             '5: corresponds to the Wilfire_2023\n'
+                             '6: corresponds to the Nemo\n'
+                             '7: corresponds to the DS_08_V1\n'
+                             '8: corresponds to the DS_08_V2',
                         type=str)
+    parser.add_argument('--cookies', type=str, default=None, 
+                        help='Path to cookies.txt file for authentication.')
 
     args = parser.parse_args()
-
     selected_options = args.options
+    cookies_path = args.cookies
 
     for option in selected_options:
         file_info = file_urls.get(option)
         if file_info:
             url_id = file_info['id']
             file_name = file_info['name']
-            # create a folder with the name of the file
+            # Crea una carpeta con el nombre del archivo
             path_folder = os.path.join(path, file_name)
             if not os.path.exists(path_folder):
                 os.makedirs(path_folder)
             destination = os.path.join(path_folder, f'{file_name}.zip')
-            download_and_extract(url_id, destination)
+            download_and_extract(url_id, destination, cookies_path)
         else:
             print(f"Invalid option '{option}'.")
 
     print("Download and extraction completed.")
-
