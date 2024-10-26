@@ -8,17 +8,26 @@ def download_and_extract(url, destination, cookies_path=None):
         # Si se proporcionan cookies, las usamos para la descarga
         if cookies_path:
             gdown.download(f"https://drive.google.com/uc?id={url}", destination, quiet=False, use_cookies=cookies_path)
-
         else:
             gdown.download(f"https://drive.google.com/uc?id={url}", destination, quiet=False)
-        
-        # Descomprime el archivo ZIP
-        with zipfile.ZipFile(destination, 'r') as zip_ref:
-            zip_ref.extractall(os.path.dirname(destination))
-        os.remove(destination)
 
-    except Exception as e:
-        print(f"Error downloading or extracting: {e}")
+        # Descomprime el archivo ZIP sin crear carpeta contenedora
+        with zipfile.ZipFile(destination, 'r') as zip_ref:
+            temp_dir = os.path.join(os.path.dirname(destination), 'temp_extracted')
+            zip_ref.extractall(temp_dir)
+
+            # Mover los archivos al directorio destino
+            for root, _, files in os.walk(temp_dir):
+                for file in files:
+                    src = os.path.join(root, file)
+                    dst = os.path.join(os.path.dirname(destination), file)
+                    os.rename(src, dst)
+
+            # Eliminar la carpeta temporal
+            os.rmdir(temp_dir)
+
+        # Eliminar el archivo ZIP
+        os.remove(destination)
 
 if __name__ == "__main__":
     path = "/data/nisla/Smoke50v3/DS/images"
@@ -29,9 +38,9 @@ if __name__ == "__main__":
         '1': {'id': '11cU3DYDVtRPjIYLyT345y2L-wCOYagCK', 'name': '2019a-smoke-full'},
         '2': {'id': '1kXzF--BmVUNBdG2EHCF3jDb5QmYaj3EB', 'name': 'AiForMankind'},
         # https://drive.google.com/file/d/1QPfjcLlHPhZ52I84KOm7Ar5BMSSIGq17/view?usp=drive_link
-        '3': {'id': '1QPfjcLlHPhZ52I84KOm7Ar5BMSSIGq17', 'name': 'test'},
+        '3': {'id': '1QPfjcLlHPhZ52I84KOm7Ar5BMSSIGq17', 'name': 'val'},
         # https://drive.google.com/file/d/1D4X0SfPiZjyadu2mEtU9YbKmQBid7-wT/view?usp=drive_link
-        '4': {'id': '1D4X0SfPiZjyadu2mEtU9YbKmQBid7-wT', 'name': 'val'},
+        '4': {'id': '1D4X0SfPiZjyadu2mEtU9YbKmQBid7-wT', 'name': 'test'},
         
     }
     parser = argparse.ArgumentParser(description='Download and extract ZIP file from Google Drive.')
