@@ -58,6 +58,14 @@ if __name__ == "__main__":
         'part5': {'id': '13JnWRFU0HejJ9agQswOv-v_4JDeL3eQF', 'name': 'train_part5'},
         # https://drive.google.com/file/d/1AVignIUhd_Lf9RqOrlfavTTxFoVs_nuT/view?usp=drive_link
         'part6': {'id': '1AVignIUhd_Lf9RqOrlfavTTxFoVs_nuT', 'name': 'train_part6'},
+        # https://drive.google.com/file/d/1vmlbysyoHZ8sVe-lhOE5k45b-REd3Qnm/view?usp=drive_link
+        'part7': {'id': '1vmlbysyoHZ8sVe-lhOE5k45b-REd3Qnm', 'name': 'train_part7'},
+        # https://drive.google.com/file/d/1rZuV9WBHgEmo6Eq2_oO8qLrbjDcmEG9p/view?usp=drive_link
+        'part8': {'id': '1rZuV9WBHgEmo6Eq2_oO8qLrbjDcmEG9p', 'name': 'train_part8'},
+        # https://drive.google.com/file/d/1XAgl5v96enRjMCQ8BNzkOlok0HMsxL2R/view?usp=drive_link
+        'part9': {'id': '1XAgl5v96enRjMCQ8BNzkOlok0HMsxL2R', 'name': 'train_part9'},
+        # https://drive.google.com/file/d/1b9_jJybQOYE6Gcapb5SICVhycpiMSL-0/view?usp=drive_link
+        'part10': {'id': '1b9_jJybQOYE6Gcapb5SICVhycpiMSL-0', 'name': 'train_part10'},
         
     }
 
