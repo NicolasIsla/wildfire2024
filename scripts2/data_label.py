@@ -1,60 +1,54 @@
 import gdown
 import zipfile
 import os
-import shutil
+import argparse
 
-def download_and_extract(file_urls, destination):
-    """
-    Descarga cada parte de un archivo desde Google Drive, la extrae y elimina el ZIP inmediatamente.
-    """
+def download_and_extract(url, destination, cookies_path=None):
     try:
-        # Crear el directorio de destino si no existe
-        if not os.path.exists(destination):
-            os.makedirs(destination)
+        # Descarga usando cookies si se proporcionan
+        if cookies_path:
+            gdown.download(f"https://drive.google.com/uc?id={url}", destination, quiet=False, use_cookies=cookies_path)
+        else:
+            gdown.download(f"https://drive.google.com/uc?id={url}", destination, quiet=False)
 
-        # Procesar cada archivo en la lista de URLs
-        for part_name, info in file_urls.items():
-            output_path = os.path.join(destination, f"{info['name']}.zip")
-            print(f"Descargando {info['name']}...")
+        # Extrae el contenido del ZIP en el mismo directorio del archivo ZIP
+        with zipfile.ZipFile(destination, 'r') as zip_ref:
+            zip_ref.extractall(os.path.dirname(destination))
+        os.remove(destination)
 
-            # Descargar el archivo ZIP
-            gdown.download(f"https://drive.google.com/uc?id={info['id']}", output_path, quiet=False)
-
-            # Extraer el contenido del ZIP a una carpeta temporal
-            temp_extract_path = os.path.join(destination, 'temp')
-            os.makedirs(temp_extract_path, exist_ok=True)
-            
-            print(f"Extrayendo {info['name']}...")
-            with zipfile.ZipFile(output_path, 'r') as zip_ref:
-                zip_ref.extractall(temp_extract_path)
-
-            # Mover archivos desde la carpeta temporal al destino final
-            for root, _, files in os.walk(temp_extract_path):
-                for file in files:
-                    src = os.path.join(root, file)
-                    dst = os.path.join(destination, file)
-                    shutil.move(src, dst)
-
-            # Limpiar la carpeta temporal y eliminar el ZIP
-            shutil.rmtree(temp_extract_path)
-            os.remove(output_path)
-            print(f"{info['name']} extraído y ZIP eliminado.")
-
-        print("Todas las partes descargadas, extraídas y procesadas exitosamente.")
     except Exception as e:
-        print(f"Error durante el proceso: {e}")
+        print(f"Error downloading or extracting: {e}")
 
 if __name__ == "__main__":
-    # Define las URLs y nombres de los archivos a descargar
+    path =  "/data/nisla/Smoke50v3/DS/labels"
+    if not os.path.exists(path):
+        os.makedirs(path)
+
     file_urls = {
-        # URLs de ejemplo
-        'part1': {'id': '1BzrKREedNtPsZukliB1Sl64e9e6txinQ', 'name': 'train_part1'},
-        
+        # https://drive.google.com/file/d/1BzrKREedNtPsZukliB1Sl64e9e6txinQ/view?usp=drive_link
+        '1': {'id': '1BzrKREedNtPsZukliB1Sl64e9e6txinQ', 'name': 'labels'},
+        # Agrega más opciones según sea necesario...
     }
 
-    # Ruta de destino donde se guardarán los archivos extraídos
-    destination = "/data/nisla/Smoke50v3/DS/labels"
+    parser = argparse.ArgumentParser(description='Download and extract ZIP file from Google Drive.')
+    parser.add_argument('options', 
+                        help='Select one or more options for the URLs (e.g., "12" or "3").', 
+                        type=str)
+    parser.add_argument('--cookies', type=str, default=None, 
+                        help='Path to cookies.txt file for authentication.')
 
-    # Ejecutar la función para descargar, extraer y eliminar progresivamente
-    download_and_extract(file_urls, destination)
+    args = parser.parse_args()
+    selected_options = args.options
+    cookies_path = args.cookies
 
+    for option in selected_options:
+        file_info = file_urls.get(option)
+        if file_info:
+            url_id = file_info['id']
+            file_name = file_info['name']
+            destination = os.path.join(path, f'{file_name}.zip')
+            download_and_extract(url_id, destination, cookies_path)
+        else:
+            print(f"Invalid option '{option}'.")
+
+    print("Download and extraction completed.")
