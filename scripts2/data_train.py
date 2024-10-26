@@ -1,11 +1,7 @@
 import gdown
 import zipfile
 import os
-import argparse
-
-import gdown
-import zipfile
-import os
+import shutil
 
 def download_and_extract(file_urls, destination):
     """
@@ -24,12 +20,23 @@ def download_and_extract(file_urls, destination):
             # Descargar el archivo ZIP
             gdown.download(f"https://drive.google.com/uc?id={info['id']}", output_path, quiet=False)
 
-            # Extraer el contenido del ZIP
+            # Extraer el contenido del ZIP a una carpeta temporal
+            temp_extract_path = os.path.join(destination, 'temp')
+            os.makedirs(temp_extract_path, exist_ok=True)
+            
             print(f"Extrayendo {info['name']}...")
             with zipfile.ZipFile(output_path, 'r') as zip_ref:
-                zip_ref.extractall(destination)
+                zip_ref.extractall(temp_extract_path)
 
-            # Eliminar el archivo ZIP una vez extraído
+            # Mover archivos desde la carpeta temporal al destino final
+            for root, _, files in os.walk(temp_extract_path):
+                for file in files:
+                    src = os.path.join(root, file)
+                    dst = os.path.join(destination, file)
+                    shutil.move(src, dst)
+
+            # Limpiar la carpeta temporal y eliminar el ZIP
+            shutil.rmtree(temp_extract_path)
             os.remove(output_path)
             print(f"{info['name']} extraído y ZIP eliminado.")
 
@@ -51,3 +58,4 @@ if __name__ == "__main__":
 
     # Ejecutar la función para descargar, extraer y eliminar progresivamente
     download_and_extract(file_urls, destination)
+
