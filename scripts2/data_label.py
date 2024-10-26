@@ -48,21 +48,12 @@ if __name__ == "__main__":
     # Define las URLs y nombres de los archivos a descargar
     file_urls = {
         # URLs de ejemplo
-        'part1': {'id': '1fgFh81Uu5rp8GnZzk7GFLmWdvsIeDBk0', 'name': 'train_part1'},
-        'part2': {'id': '1gkr6yFR1Dj_Mht_gUAH8vW_RWzt2om8g', 'name': 'train_part2'},
-        # https://drive.google.com/file/d/1mOZNk7pQmBK3vNoU-VXL9kmDo3cKBNOa/view?usp=drive_link
-        'part3': {'id': '1mOZNk7pQmBK3vNoU-VXL9kmDo3cKBNOa', 'name': 'train_part3'},
-        # https://drive.google.com/file/d/1rN86Xi9JOSZjVe9c4dMbZzFmZn6OK4Xp/view?usp=drive_link
-        'part4': {'id': '1rN86Xi9JOSZjVe9c4dMbZzFmZn6OK4Xp', 'name': 'train_part4'},
-        # https://drive.google.com/file/d/13JnWRFU0HejJ9agQswOv-v_4JDeL3eQF/view?usp=drive_link
-        'part5': {'id': '13JnWRFU0HejJ9agQswOv-v_4JDeL3eQF', 'name': 'train_part5'},
-        # https://drive.google.com/file/d/1AVignIUhd_Lf9RqOrlfavTTxFoVs_nuT/view?usp=drive_link
-        'part6': {'id': '1AVignIUhd_Lf9RqOrlfavTTxFoVs_nuT', 'name': 'train_part6'},
+        'part1': {'id': '1BzrKREedNtPsZukliB1Sl64e9e6txinQ', 'name': 'train_part1'},
         
     }
 
     # Ruta de destino donde se guardarán los archivos extraídos
-    destination = "/data/nisla/Smoke50v3/DS/images/train"
+    destination = "/data/nisla/Smoke50v3/DS/labels"
 
     # Ejecutar la función para descargar, extraer y eliminar progresivamente
     download_and_extract(file_urls, destination)
