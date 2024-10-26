@@ -28,6 +28,8 @@ def download_and_extract(url, destination, cookies_path=None):
 
         # Eliminar el archivo ZIP
         os.remove(destination)
+    except Exception as e:
+        print(f"Error downloading or extracting: {e}")
 
 if __name__ == "__main__":
     path = "/data/nisla/Smoke50v3/DS/images"
