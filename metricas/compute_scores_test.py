@@ -35,6 +35,8 @@ def main(args):
             # no continuar
             continue
         conf_thres = conf_dict.get(model_name)
+        if conf_thres == None:
+            conf_thres ==0.01
         # Obtener el conf correspondiente para el modelo
         # conf_thres = 0.18 # Usa 0.01 como valor por defecto si no se encuentra en el dict, print error
 
