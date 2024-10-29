@@ -7,10 +7,79 @@ import pandas as pd
 
 
 # Evaluate predictions
+# def evaluate_predictions(pred_folder, gt_folder, conf_th=0.1, cat=None):
+#     nb_fp, nb_tp, nb_fn = 0, 0, 0
+
+#     # Create a list of all image filenames (without the file extension)
+#     gt_filenames = [
+#         os.path.splitext(os.path.basename(f))[0]
+#         for f in glob.glob(os.path.join(gt_folder, "*.txt"))
+#     ]
+#     pred_filenames = [
+#         os.path.splitext(os.path.basename(f))[0]
+#         for f in glob.glob(os.path.join(pred_folder, "*.txt"))
+#     ]
+
+#     # Evaluate each image based on the presence of ground truth and prediction files
+#     all_filenames = set(gt_filenames + pred_filenames)
+#     if cat is not None:
+#         all_filenames = [f for f in all_filenames if cat == f.split("_")[0].lower()]
+#     for filename in all_filenames:
+#         gt_file = os.path.join(gt_folder, f"{filename}.txt")
+#         pred_file = os.path.join(pred_folder, f"{filename}.txt")
+
+#         gt_boxes = []
+#         # Read ground truth boxes if file exists
+#         if os.path.isfile(gt_file) and os.path.getsize(gt_file) > 0:
+#             with open(gt_file, "r") as f:
+#                 gt_boxes = [
+#                     xywh2xyxy(np.array(line.strip().split(" ")[1:5]).astype(float))
+#                     for line in f.readlines()
+#                 ]
+
+#         gt_matches = np.zeros(len(gt_boxes), dtype=bool)
+
+#         # Read prediction boxes if file exists
+#         if os.path.isfile(pred_file) and os.path.getsize(pred_file) > 0:
+#             with open(pred_file, "r") as f:
+#                 pred_boxes = [line.strip().split(" ") for line in f.readlines()]
+
+#             for pred_box in pred_boxes:
+#                 try:
+#                     _, x, y, w, h, conf = map(float, pred_box)
+#                 except:
+#                     print(pred_file)
+#                 if conf < conf_th:
+#                     continue
+#                 pred_box = xywh2xyxy(np.array([x, y, w, h]))
+
+#                 if gt_boxes:
+#                     matches = [box_iou(pred_box, gt_box) > 0.1 for gt_box in gt_boxes]
+#                     if any(matches):
+#                         nb_tp += 1
+#                         gt_matches = gt_matches | matches
+#                     else:
+#                         nb_fp += 1
+#                 else:
+#                     nb_fp += 1
+
+#         if gt_boxes:
+#             nb_fn += len(gt_boxes) - np.sum(gt_matches)
+
+#     precision = nb_tp / (nb_tp + nb_fp) if (nb_tp + nb_fp) > 0 else 0
+#     recall = nb_tp / (nb_tp + nb_fn) if (nb_tp + nb_fn) > 0 else 0
+#     f1_score = (
+#         2 * (precision * recall) / (precision + recall)
+#         if (precision + recall) > 0
+#         else 0
+#     )
+
+#     return {"precision": precision, "recall": recall, "f1_score": f1_score}
+
 def evaluate_predictions(pred_folder, gt_folder, conf_th=0.1, cat=None):
     nb_fp, nb_tp, nb_fn = 0, 0, 0
 
-    # Create a list of all image filenames (without the file extension)
+    # Crear listas de nombres de archivos sin extensión
     gt_filenames = [
         os.path.splitext(os.path.basename(f))[0]
         for f in glob.glob(os.path.join(gt_folder, "*.txt"))
@@ -20,16 +89,17 @@ def evaluate_predictions(pred_folder, gt_folder, conf_th=0.1, cat=None):
         for f in glob.glob(os.path.join(pred_folder, "*.txt"))
     ]
 
-    # Evaluate each image based on the presence of ground truth and prediction files
+    # Unir y filtrar los nombres de archivos
     all_filenames = set(gt_filenames + pred_filenames)
     if cat is not None:
         all_filenames = [f for f in all_filenames if cat == f.split("_")[0].lower()]
+
     for filename in all_filenames:
         gt_file = os.path.join(gt_folder, f"{filename}.txt")
         pred_file = os.path.join(pred_folder, f"{filename}.txt")
 
         gt_boxes = []
-        # Read ground truth boxes if file exists
+        # Leer cuadros de ground truth
         if os.path.isfile(gt_file) and os.path.getsize(gt_file) > 0:
             with open(gt_file, "r") as f:
                 gt_boxes = [
@@ -39,7 +109,7 @@ def evaluate_predictions(pred_folder, gt_folder, conf_th=0.1, cat=None):
 
         gt_matches = np.zeros(len(gt_boxes), dtype=bool)
 
-        # Read prediction boxes if file exists
+        # Leer cuadros de predicción
         if os.path.isfile(pred_file) and os.path.getsize(pred_file) > 0:
             with open(pred_file, "r") as f:
                 pred_boxes = [line.strip().split(" ") for line in f.readlines()]
@@ -48,16 +118,22 @@ def evaluate_predictions(pred_folder, gt_folder, conf_th=0.1, cat=None):
                 try:
                     _, x, y, w, h, conf = map(float, pred_box)
                 except:
-                    print(pred_file)
+                    print(f"Error reading {pred_file}")
+                    continue
                 if conf < conf_th:
                     continue
                 pred_box = xywh2xyxy(np.array([x, y, w, h]))
 
                 if gt_boxes:
-                    matches = [box_iou(pred_box, gt_box) > 0.1 for gt_box in gt_boxes]
-                    if any(matches):
+                    # Encontrar la mejor coincidencia por IoU
+                    iou_values = [box_iou(pred_box, gt_box) for gt_box in gt_boxes]
+                    max_iou = max(iou_values)
+                    best_match_idx = np.argmax(iou_values)
+
+                    # Verificar coincidencia válida y única
+                    if max_iou > 0.1 and not gt_matches[best_match_idx]:
                         nb_tp += 1
-                        gt_matches = gt_matches | matches
+                        gt_matches[best_match_idx] = True
                     else:
                         nb_fp += 1
                 else:
@@ -66,6 +142,7 @@ def evaluate_predictions(pred_folder, gt_folder, conf_th=0.1, cat=None):
         if gt_boxes:
             nb_fn += len(gt_boxes) - np.sum(gt_matches)
 
+    # Calcular métricas
     precision = nb_tp / (nb_tp + nb_fp) if (nb_tp + nb_fp) > 0 else 0
     recall = nb_tp / (nb_tp + nb_fn) if (nb_tp + nb_fn) > 0 else 0
     f1_score = (
