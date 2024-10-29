@@ -20,7 +20,7 @@ def load_conf_values(conf_file):
 def main(args):
     gt_folder = args.gt_folder  # Ruta al folder de ground truth
     pred_folder = args.pred_folder  # Ruta al folder de predicciones
-    # conf_dict = load_conf_values(args.conf_file)  # Cargar el diccionario de conf
+    conf_dict = load_conf_values(args.conf_file)  # Cargar el diccionario de conf
 
     # Verificar que existan archivos en la ruta de predicciones
     prediction_files = glob.glob(os.path.join(pred_folder, "*"))
@@ -34,8 +34,10 @@ def main(args):
         if model_name == "results.csv":
             # no continuar
             continue
+        conf_thres = conf_dict.get(model_name)
         # Obtener el conf correspondiente para el modelo
-        conf_thres = 0.18 # Usa 0.01 como valor por defecto si no se encuentra en el dict, print error
+        # conf_thres = 0.18 # Usa 0.01 como valor por defecto si no se encuentra en el dict, print error
+
         print(f"Model: {model_name}, Confidence Threshold: {conf_thres}")
 
         metrics = evaluate_predictions(pred_foldera, gt_folder, conf_th=conf_thres)
