@@ -52,6 +52,8 @@ for video in os.listdir(path_videos):
                 line = f.readline().split()
                 if len(line) == 5:
                     _, x_true, y_true, w_true, h_true = map(float, line)
+                else:
+                    x_true, y_true, w_true, h_true = 0, 0, 0, 0
         else:
             x_true, y_true, w_true, h_true = 0, 0, 0, 0
         
@@ -91,4 +93,4 @@ data = pd.DataFrame(data)
 
 
 # export to excel
-data.to_excel("data.xlsx")
+data.to_excel("data_temp.xlsx")
