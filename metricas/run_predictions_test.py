@@ -14,8 +14,10 @@ datasets_test =[
     # r"/data/nisla/NemoV2/Nemo_yolo/DS/images/test/"
     # r"/data/nisla/NemoV3/DS/images/test/",
     # r"/data/nisla/Smoke50v3/DS/images/test/",
-    r"/data/nisla/TestSmoke/testsmoke/images/test/",
+    # r"/data/nisla/TestSmoke/testsmoke/images/test/",
     # r"/data/nisla/TestSmokev2/testsmokev2/images/test_10/",
+    r"/data/nisla/TestSmokeFull/smoke_frame_test/images/test/"
+
 
 ]
 def main(model_directory):
