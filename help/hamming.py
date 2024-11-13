@@ -105,7 +105,10 @@ def process_cross_dataset(args):
 if __name__ == '__main__':
     # Cargar múltiples archivos JSON
     datasets = {}
-    json_files = ['images_hashes.json', 'images_hashes Copy.json']
+    json_files = [
+        '/data/nisla/SmokesFrames-2.4k/DS/images_hashes.json', 
+        "/data/nisla/Nemo/DS/images_hashes.json"
+                  ]
     for file in json_files:
         with open(file, 'r') as f:
             datasets[file] = json.load(f)
