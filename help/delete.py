@@ -4,7 +4,6 @@ import os
 images_to_delete_file = '/home/nisla/wilfire2024/images_to_delete.txt'
 with open(images_to_delete_file, 'r') as f:
     images_to_delete = set(f.read().splitlines())
-    print(images_to_delete)
 
 # Recorrer los datasets y eliminar imágenes y sus etiquetas
 datasets_directories = [
