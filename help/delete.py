@@ -17,7 +17,7 @@ deleted_labels_count = 0
 
 for dataset_dir in datasets_directories:
     for file_path in os.listdir(dataset_dir):
-        name = os.basename(file_path)
+        name = os.path.basename(file_path)
             
         
         if name in images_to_delete:
