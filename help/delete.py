@@ -1,7 +1,7 @@
 import os
 
 # Cargar la lista de imágenes a borrar
-images_to_delete_file = 'images_to_delete.txt'
+images_to_delete_file = '/home/nisla/wilfire2024/images_to_delete.txt'
 with open(images_to_delete_file, 'r') as f:
     images_to_delete = set(f.read().splitlines())
 
