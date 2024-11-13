@@ -8,7 +8,7 @@ with open(images_to_delete_file, 'r') as f:
 
 # Recorrer los datasets y eliminar imágenes y sus etiquetas
 datasets_directories = [
-    '/data/nisla/Nemo'
+    '/data/nisla/Nemo/DS'
 ]  # Lista de directorios de tus datasets
 
 deleted_images_count = 0
