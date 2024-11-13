@@ -69,7 +69,7 @@ for video in os.listdir(path_videos):
                 # si hay incendio
                 label = False
            
-            data.append({"video": video, "frame": frame, "confidence": 0, "box_id": 0, "iou": 0, "t_0": label, "t_1": t_1, "t_2": t_2, "t_3": t_3, "t_4": t_4,"box": None,})
+            data.append({"video": video, "frame": frame, "confidence": 0, "box_id": 0, "iou": 0, "t_0": label, "t_1": t_1, "t_2": t_2, "t_3": t_3, "t_4": t_4,"box": None, "gt":None})
             t_0_abs = label
         else:
             for result in results:
@@ -79,7 +79,7 @@ for video in os.listdir(path_videos):
 
                     iou = calculate_iou([x_true, y_true, x_true + w_true, y_true + h_true], bounding_box)
                     t_0 = True if iou > 0.1 else False
-                    data.append({"video": video, "frame": frame, "confidence": confidence, "box_id": i+1,  "iou": iou, "t_0": t_0, "t_1": t_1, "t_2": t_2, "t_3": t_3, "t_4": t_4, "box": bounding_box,})
+                    data.append({"video": video, "frame": frame, "confidence": confidence, "box_id": i+1,  "iou": iou, "t_0": t_0, "t_1": t_1, "t_2": t_2, "t_3": t_3, "t_4": t_4, "box": bounding_box, "gt": [x_true, y_true, x_true + w_true, y_true + h_true]})
                     if t_0 == True:
                         t_0_abs = True
         
