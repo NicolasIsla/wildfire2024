@@ -16,7 +16,9 @@ deleted_images_count = 0
 deleted_labels_count = 0
 
 for dataset_dir in datasets_directories:
-    for file_path in os.listdir(dataset_dir):
+    for image in os.listdir(dataset_dir):
+        file_path = os.path.join(dataset_dir, image)
+
         name = os.path.basename(file_path)
             
         
