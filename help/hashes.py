@@ -52,6 +52,6 @@ dataset_paths = [
 # Ejecutar el script
 for dataset_path in dataset_paths:
     # Nombre del archivo de salida a partir de la ruta del dataset
-    output_file = os.path.basename(dataset_path).replace(" ", "_") + '_hashes.json'
+    output_file = (dataset_path).replace(" ", "_") + '_hashes.json'
     process_datasets(dataset_path, output_file)
 
