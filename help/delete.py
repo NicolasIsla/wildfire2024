@@ -7,7 +7,9 @@ with open(images_to_delete_file, 'r') as f:
 
 # Recorrer los datasets y eliminar imágenes y sus etiquetas
 datasets_directories = [
-    '/data/nisla/Nemo/DS'
+    '/data/nisla/Nemo/DS/images/train',
+    '/data/nisla/Nemo/DS/images/test',
+    '/data/nisla/Nemo/DS/images/val',
 ]  # Lista de directorios de tus datasets
 
 deleted_images_count = 0
@@ -15,6 +17,7 @@ deleted_labels_count = 0
 
 for dataset_dir in datasets_directories:
     for root, _, files in os.walk(dataset_dir):
+        print
         for file in files:
             file_path = os.path.join(root, file)
             if file_path in images_to_delete:
@@ -28,6 +31,8 @@ for dataset_dir in datasets_directories:
 
                 # Buscar y eliminar la etiqueta correspondiente
                 label_path = os.path.splitext(file_path)[0] + '.txt'
+                # replace images with labels
+                label_path = label_path.replace('images', 'labels')
                 if os.path.exists(label_path):
                     try:
                         os.remove(label_path)
