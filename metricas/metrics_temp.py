@@ -57,7 +57,7 @@ for video in os.listdir(path_videos):
         else:
             x_true, y_true, w_true, h_true = 0, 0, 0, 0
         
-        results = model(os.path.join(path_videos, video, frame), conf=0.01)
+        results = model(os.path.join(path_videos, video, frame), conf=0.001)
         t_0_abs = False
 
         if not results or all(len(result.boxes) == 0 for result in results):
