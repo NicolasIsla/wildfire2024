@@ -40,7 +40,7 @@ def main(args):
         if conf_thres is None:
             # Si no se encuentra el conf en el diccionario, no evaluar el modelo
             print(f"Model: {model_name} not found in the confidence dictionary. Skipping evaluation.")
-            continue
+            conf_thres = 0.05
         print(f"Model: {model_name}, Confidence Threshold: {conf_thres}")
 
         metrics = evaluate_predictions(pred_foldera, gt_folder, conf_th=conf_thres)
