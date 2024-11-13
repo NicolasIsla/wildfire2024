@@ -60,7 +60,9 @@ if __name__ == "__main__":
     	# https://drive.google.com/file/d/13706eG6stYzNifXvyyoCLqH0ec-g8w-i/view?usp=drive_link
         'f': {'id': '13706eG6stYzNifXvyyoCLqH0ec-g8w-i', 'name': 'TestSmoke'},
     	# https://drive.google.com/file/d/14zjcH4Pb1D4UQBf6G_aJhw-fHZxM-6kN/view?usp=drive_link
-	'g': {'id': '14zjcH4Pb1D4UQBf6G_aJhw-fHZxM-6kN', 'name': 'TestSmokev2'}    
+	'g': {'id': '14zjcH4Pb1D4UQBf6G_aJhw-fHZxM-6kN', 'name': 'TestSmokev2'},
+        # https://drive.google.com/file/d/1rVqaPZXf58OqnW9PQgOiw0C0HbxTlZO0/view?usp=drive_link
+        'j': {'id': '1rVqaPZXf58OqnW9PQgOiw0C0HbxTlZO0', 'name': 'TestSmokeFull'},
 	}
     parser = argparse.ArgumentParser(description='Download and extract ZIP file from Google Drive.')
     parser.add_argument('options', 
