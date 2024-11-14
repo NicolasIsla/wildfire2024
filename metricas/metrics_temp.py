@@ -104,4 +104,6 @@ data = pd.DataFrame(data)
 
 
 # export to excel
-data.to_excel("data_temp.xlsx")
+# data.to_excel("data_temp.xlsx")
+# save to csv
+data.to_csv("data_temp.csv", index=False)
