@@ -1,7 +1,7 @@
 import os
 
 # Cargar la lista de imágenes a borrar
-images_to_delete_file = '/home/nisla/wilfire2024/images_to_delete2.txt'
+images_to_delete_file = '/home/nisla/wilfire2024/images_to_delete.txt'
 with open(images_to_delete_file, 'r') as f:
     images_to_delete = set(f.read().splitlines())
 
@@ -10,7 +10,10 @@ datasets_directories = [
     # '/data/nisla/Nemo/DS/images/train',
     # '/data/nisla/Nemo/DS/images/test',
     # '/data/nisla/Nemo/DS/images/val',
-    "/data/nisla/TestSmokeFull/smoke_frame_test/images/test/"
+    # "/data/nisla/TestSmokeFull/smoke_frame_test/images/test/",
+    "/data/nisla/SmokesFrames-2.4k/DS/images/train",
+    "/data/nisla/SmokesFrames-2.4k/DS/images/test",
+    "/data/nisla/SmokesFrames-2.4k/DS/images/val",
 ]  # Lista de directorios de tus datasets
 
 deleted_images_count = 0
