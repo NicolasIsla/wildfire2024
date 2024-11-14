@@ -6,6 +6,8 @@ __pycache__/
 dist/
 build/
 *.so
+*.csv
+*.txt
 
 # Jupyter Notebooks
 .ipynb_checkpoints/
