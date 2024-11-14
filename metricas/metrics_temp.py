@@ -34,6 +34,19 @@ def calculate_iou(box1, box2):
 
 data = []
 
+def load_label(path_frame):
+    if os.path.exists(path_frame):
+            with open(path_frame, "r") as f:
+                line = f.readline().split()
+                if len(line) == 5:
+                    _, x_true, y_true, w_true, h_true = map(float, line)
+                else:
+                    x_true, y_true, w_true, h_true = 0, 0, 0, 0
+    else:
+        x_true, y_true, w_true, h_true = 0, 0, 0, 0
+    return x_true, y_true, w_true, h_true
+
+
 for video in os.listdir(path_videos):
     t_0, t_1, t_2, t_3, t_4 = None, None, None, None, None
     frames = os.listdir(os.path.join(path_videos, video))
@@ -43,21 +56,24 @@ for video in os.listdir(path_videos):
     # frames.sort(key=extract_frame_number)
     frames.sort()
     
-    for frame in frames:
+    for k, frame in enumerate(frames):
 
         path_frame = os.path.join(path_videos, video, frame)
         path_frame = path_frame.replace(".jpg", ".txt")
-        if os.path.exists(path_frame):
-            with open(path_frame, "r") as f:
-                line = f.readline().split()
-                if len(line) == 5:
-                    _, x_true, y_true, w_true, h_true = map(float, line)
-                else:
-                    x_true, y_true, w_true, h_true = 0, 0, 0, 0
-        else:
-            x_true, y_true, w_true, h_true = 0, 0, 0, 0
+        labels = []
+        # cargar los 4 frames anteriores
+        for i in range(0, 5):
+            if k - i >= 0:
+                path_frame = os.path.join(path_videos, video, frames[k - i])
+                path_frame = path_frame.replace(".jpg", ".txt")
+                x_true, y_true, w_true, h_true = load_label(path_frame)
+                labels.append([x_true, y_true, w_true, h_true])
+            else:
+                labels.append([0, 0, 0, 0])
+
         
-        results = model(os.path.join(path_videos, video, frame), conf=0.001)
+        
+        results = model(os.path.join(path_videos, video, frame), conf=0.01)
         t_0_abs = False
 
         if not results or all(len(result.boxes) == 0 for result in results):
@@ -68,26 +84,21 @@ for video in os.listdir(path_videos):
             else:
                 # si hay incendio
                 label = False
-           
-            data.append({"video": video, "frame": frame, "confidence": 0, "box_id": 0, "iou": 0, "t_0": label, "t_1": t_1, "t_2": t_2, "t_3": t_3, "t_4": t_4,"box": None, "gt":None})
-            t_0_abs = label
+
+            data.append({"video": video, "frame": frame, "confidence": 0, "box_id": 0, "iou": 0, "t_0": 0, "t_1": 0, "t_2": 0, "t_3": 0, "t_4": 0,"box": None, "gt_0": labels[0], "gt_1": labels[1], "gt_2": labels[2], "gt_3": labels[3], "gt_4": labels[4]})  
         else:
             for result in results:
                 for i, box in enumerate(result.boxes):
                     bounding_box = box.xyxyn[0].tolist()
                     confidence = box.conf.tolist()[0]
+                    ts = []
+                    for label in labels:
+                        x_true, y_true, w_true, h_true = label
+                        iou = calculate_iou([x_true, y_true, x_true + w_true, y_true + h_true], bounding_box)
+                        t_i = 1 if iou > 0.1 else 0
+                        ts.append(t_i)
 
-                    iou = calculate_iou([x_true, y_true, x_true + w_true, y_true + h_true], bounding_box)
-                    t_0 = True if iou > 0.1 else False
-                    data.append({"video": video, "frame": frame, "confidence": confidence, "box_id": i+1,  "iou": iou, "t_0": t_0, "t_1": t_1, "t_2": t_2, "t_3": t_3, "t_4": t_4, "box": bounding_box, "gt": [x_true, y_true, x_true + w_true, y_true + h_true]})
-                    if t_0 == True:
-                        t_0_abs = True
-        
-        # Update the temporal states
-        t_4 = t_3     
-        t_3 = t_2
-        t_2 = t_1
-        t_1 = t_0_abs
+                    data.append({"video": video, "frame": frame, "confidence": confidence, "box_id": i+1,  "iou": iou, "t_0": ts[0], "t_1": ts[1], "t_2": ts[2], "t_3": ts[3], "t_4": ts[4], "box": bounding_box, "gt_0": labels[0], "gt_1": labels[1], "gt_2": labels[2], "gt_3": labels[3], "gt_4": labels[4]})
 
 data = pd.DataFrame(data)
 
