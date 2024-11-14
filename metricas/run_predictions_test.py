@@ -6,10 +6,10 @@ datasets_test =[
     # r"/data/nisla/2019a-smoke-full/DS/images/test/",
     # r"/data/nisla/AiForMankind/DS/images/test/",
     # # r"/data/nisla/total_Combine/DS/images/test/",
-    # r"/data/nisla/SmokesFrames-2.4k/DS/images/test/",
+    r"/data/nisla/SmokesFrames-2.4k/DS/images/val/",
     # # r"/data/nisla/Wilfire_2023/DS/images/test/",
     # r"/data/nisla/Nemo/DS/images/test/",
-    # r"/data/nisla/DS_08_V1/DS/images/test/",
+    r"/data/nisla/DS_08_V1/DS/images/val/",
     r"/data/nisla/DS_08_V2/DS/images/val/"
     # r"/data/nisla/NemoV2/Nemo_yolo/DS/images/test/"
     # r"/data/nisla/NemoV3/DS/images/test/",
@@ -17,7 +17,6 @@ datasets_test =[
     # r"/data/nisla/TestSmoke/testsmoke/images/test/",
     # r"/data/nisla/TestSmokev2/testsmokev2/images/test_10/",
     # r"/data/nisla/TestSmokeFull/smoke_frame_test/images/test/"
-
 
 ]
 def main(model_directory):
