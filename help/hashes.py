@@ -47,7 +47,8 @@ def process_datasets(base_path, output_file='image_hashes.json'):
 dataset_paths = [
     r"/data/nisla/Nemo/DS/images",
     r"/data/nisla/SmokesFrames-2.4k/DS/images",
-    r"/data/nisla/Smoke50v3/DS/images/"
+    # r"/data/nisla/Smoke50v3/DS/images/"
+    r"/data/nisla/TestSmokeFull/smoke_frame_test/images/"
 ]
 
 # Ejecutar el script
