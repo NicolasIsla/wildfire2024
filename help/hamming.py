@@ -49,8 +49,9 @@ if __name__ == '__main__':
     # Cargar múltiples archivos JSON
     datasets = {}
     json_files = [
-        '/data/nisla/SmokesFrames-2.4k/DS/images_hashes.json', 
-        "/data/nisla/Nemo/DS/images_hashes.json"
+        # '/data/nisla/SmokesFrames-2.4k/DS/images_hashes.json', 
+        "/data/nisla/Nemo/DS/images_hashes.json",
+        "/data/nisla/TestSmokeFull/smoke_frame_test/images/_hashes.json"
     ]
     for file in json_files:
         with open(file, 'r') as f:
@@ -88,8 +89,8 @@ if __name__ == '__main__':
     df_cross_dataset = pd.DataFrame(cross_dataset_results)
 
     # Guardar resultados a CSV
-    df_same_dataset.to_csv('hamming_distances_same_dataset.csv', index=False)
-    df_cross_dataset.to_csv('hamming_distances_cross_datasets.csv', index=False)
+    df_same_dataset.to_csv('hamming_distances_same_dataset2.csv', index=False)
+    df_cross_dataset.to_csv('hamming_distances_cross_datasets2.csv', index=False)
 
     print("CSV generados con éxito:")
     print("1. hamming_distances_same_dataset.csv")
