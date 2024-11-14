@@ -6,7 +6,7 @@ datasets_test =[
     # r"/data/nisla/2019a-smoke-full/DS/images/test/",
     # r"/data/nisla/AiForMankind/DS/images/test/",
     # # r"/data/nisla/total_Combine/DS/images/test/",
-    # r"/data/nisla/SmokesFrames-2.4k/DS/images/test/",
+    r"/data/nisla/SmokesFrames-2.4k/DS/images/test/",
     # # r"/data/nisla/Wilfire_2023/DS/images/test/",
     # r"/data/nisla/Nemo/DS/images/test/",
     # r"/data/nisla/DS_08_V1/DS/images/test/",
