@@ -220,7 +220,11 @@ def find_best_conf_threshold_and_plot(
     # save 
     # save the best recall, precision and f1 score
     
-    np.save(f"{pred_folder}/best_metrics.npy", [f1_scores, precisions, recalls, best_conf_thres])
+    np.save(f"{pred_folder}/f1_scores.npy", f1_scores)
+    np.save(f"{pred_folder}/precisions.npy", precisions)
+    np.save(f"{pred_folder}/recalls.npy", recalls)
+    np.save(f"{pred_folder}/conf_thres.npy", conf_thres_range)
+
     if plot:
 
         # Plotting the metrics
